@@ -22,9 +22,27 @@ Partial Class Form1
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        components = New System.ComponentModel.Container()
+        Me.TreeView1 = New System.Windows.Forms.TreeView()
+        Me.SuspendLayout()
+        '
+        'TreeView1
+        '
+        Me.TreeView1.Location = New System.Drawing.Point(13, 18)
+        Me.TreeView1.Name = "TreeView1"
+        Me.TreeView1.Size = New System.Drawing.Size(253, 565)
+        Me.TreeView1.TabIndex = 0
+        '
+        'Form1
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(1056, 602)
+        Me.Controls.Add(Me.TreeView1)
+        Me.Name = "Form1"
         Me.Text = "Form1"
+        Me.ResumeLayout(False)
+
     End Sub
+    Friend WithEvents TreeView1 As System.Windows.Forms.TreeView
 
 End Class
