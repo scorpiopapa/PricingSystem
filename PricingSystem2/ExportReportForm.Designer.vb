@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form4
+Partial Class ExportReportForm
     Inherits System.Windows.Forms.Form
 
     'Form 重写 Dispose，以清理组件列表。
@@ -128,7 +128,6 @@ Partial Class Form4
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ComboBox1)
         Me.Name = "Form4"
-        Me.Text = "Form4"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
