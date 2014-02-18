@@ -52,11 +52,11 @@ Partial Class ReportForm
         '
         'Button2
         '
-        Me.Button2.Location = New System.Drawing.Point(428, 23)
+        Me.Button2.Location = New System.Drawing.Point(286, 20)
         Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(67, 20)
+        Me.Button2.Size = New System.Drawing.Size(55, 25)
         Me.Button2.TabIndex = 14
-        Me.Button2.Text = "添加/修改"
+        Me.Button2.Text = "添加"
         Me.Button2.UseVisualStyleBackColor = True
         '
         'DataGridView1
@@ -89,7 +89,7 @@ Partial Class ReportForm
         Me.Column3.HeaderText = "公式"
         Me.Column3.Name = "Column3"
         '
-        'Form2
+        'ReportForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -98,7 +98,7 @@ Partial Class ReportForm
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ComboBox1)
-        Me.Name = "Form2"
+        Me.Name = "ReportForm"
         Me.Text = "明细表管理"
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
