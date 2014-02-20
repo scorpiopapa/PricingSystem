@@ -70,8 +70,14 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccesDao.vb" />
+    <Compile Include="AccessDao.vb" />
     <Compile Include="AccessService.vb" />
+    <Compile Include="AddReportForm.Designer.vb">
+      <DependentUpon>AddReportForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AddReportForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormUtils.vb" />
     <Compile Include="Log.vb" />
     <Compile Include="MainForm.vb">
@@ -81,10 +87,10 @@
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ReportForm.Designer.vb">
-      <DependentUpon>ReportForm.vb</DependentUpon>
+    <Compile Include="UpdateReportForm.Designer.vb">
+      <DependentUpon>UpdateReportForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="ReportForm.vb">
+    <Compile Include="UpdateReportForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SummaryReportForm.Designer.vb">
@@ -114,13 +120,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="DBConstants.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AddReportForm.resx">
+      <DependentUpon>AddReportForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ReportForm.resx">
-      <DependentUpon>ReportForm.vb</DependentUpon>
+    <EmbeddedResource Include="UpdateReportForm.resx">
+      <DependentUpon>UpdateReportForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SummaryReportForm.resx">
       <DependentUpon>SummaryReportForm.vb</DependentUpon>
