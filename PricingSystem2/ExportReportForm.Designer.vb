@@ -44,6 +44,7 @@ Partial Class ExportReportForm
         '
         'ComboBox1
         '
+        Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox1.FormattingEnabled = True
         Me.ComboBox1.Location = New System.Drawing.Point(89, 23)
         Me.ComboBox1.Name = "ComboBox1"
@@ -113,7 +114,7 @@ Partial Class ExportReportForm
         Me.Button6.Text = "生成"
         Me.Button6.UseVisualStyleBackColor = True
         '
-        'Form4
+        'ExportReportForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -127,7 +128,8 @@ Partial Class ExportReportForm
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ComboBox1)
-        Me.Name = "Form4"
+        Me.Name = "ExportReportForm"
+        Me.Text = "导出模板"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

@@ -11,7 +11,8 @@
     <AssemblyName>PricingSystem2</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,6 +45,27 @@
   </PropertyGroup>
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DocumentationFile>PricingSystem2.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DocumentationFile>PricingSystem2.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -78,6 +100,13 @@
     <Compile Include="AddReportForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="AddSummaryReportForm.Designer.vb">
+      <DependentUpon>AddSummaryReportForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="AddSummaryReportForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DBUtils.vb" />
     <Compile Include="FormUtils.vb" />
     <Compile Include="Log.vb" />
     <Compile Include="MainForm.vb">
@@ -87,16 +116,11 @@
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ReportMasterTable.vb" />
     <Compile Include="UpdateReportForm.Designer.vb">
       <DependentUpon>UpdateReportForm.vb</DependentUpon>
     </Compile>
     <Compile Include="UpdateReportForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SummaryReportForm.Designer.vb">
-      <DependentUpon>SummaryReportForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="SummaryReportForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ExportReportForm.Designer.vb">
@@ -121,19 +145,25 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="DBConstants.vb" />
+    <Compile Include="UpdateSummaryReportForm.Designer.vb">
+      <DependentUpon>UpdateSummaryReportForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UpdateSummaryReportForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AddReportForm.resx">
       <DependentUpon>AddReportForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddSummaryReportForm.resx">
+      <DependentUpon>AddSummaryReportForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UpdateReportForm.resx">
       <DependentUpon>UpdateReportForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SummaryReportForm.resx">
-      <DependentUpon>SummaryReportForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ExportReportForm.resx">
       <DependentUpon>ExportReportForm.vb</DependentUpon>
@@ -143,6 +173,9 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpdateSummaryReportForm.resx">
+      <DependentUpon>UpdateSummaryReportForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

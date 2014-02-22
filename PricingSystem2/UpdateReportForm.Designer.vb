@@ -31,6 +31,7 @@ Partial Class UpdateReportForm
         '
         'ComboBox1
         '
+        Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox1.FormattingEnabled = True
         Me.ComboBox1.Location = New System.Drawing.Point(82, 23)
         Me.ComboBox1.Name = "ComboBox1"
@@ -61,19 +62,20 @@ Partial Class UpdateReportForm
         Me.DataGridView1.Location = New System.Drawing.Point(25, 65)
         Me.DataGridView1.Name = "DataGridView1"
         Me.DataGridView1.RowTemplate.Height = 23
-        Me.DataGridView1.Size = New System.Drawing.Size(480, 281)
+        Me.DataGridView1.Size = New System.Drawing.Size(550, 281)
         Me.DataGridView1.TabIndex = 15
         '
         'UpdateReportForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(527, 363)
+        Me.ClientSize = New System.Drawing.Size(605, 363)
         Me.Controls.Add(Me.DataGridView1)
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ComboBox1)
         Me.Name = "UpdateReportForm"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "更新明细报表"
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
