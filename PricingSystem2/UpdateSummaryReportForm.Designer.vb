@@ -23,12 +23,12 @@ Partial Class UpdateSummaryReportForm
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.DataGridView1 = New System.Windows.Forms.DataGridView()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.Column1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -41,6 +41,21 @@ Partial Class UpdateSummaryReportForm
         Me.DataGridView1.RowTemplate.Height = 23
         Me.DataGridView1.Size = New System.Drawing.Size(480, 281)
         Me.DataGridView1.TabIndex = 19
+        '
+        'Column1
+        '
+        Me.Column1.HeaderText = "表项名称"
+        Me.Column1.Name = "Column1"
+        '
+        'Column2
+        '
+        Me.Column2.HeaderText = "引用表名称"
+        Me.Column2.Name = "Column2"
+        '
+        'Column3
+        '
+        Me.Column3.HeaderText = "引用表项名称"
+        Me.Column3.Name = "Column3"
         '
         'Button2
         '
@@ -64,25 +79,11 @@ Partial Class UpdateSummaryReportForm
         '
         Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox1.FormattingEnabled = True
+        Me.ComboBox1.Items.AddRange(New Object() {"汇总表1", "汇总表2"})
         Me.ComboBox1.Location = New System.Drawing.Point(82, 12)
         Me.ComboBox1.Name = "ComboBox1"
         Me.ComboBox1.Size = New System.Drawing.Size(187, 20)
         Me.ComboBox1.TabIndex = 16
-        '
-        'Column1
-        '
-        Me.Column1.HeaderText = "表项名称"
-        Me.Column1.Name = "Column1"
-        '
-        'Column2
-        '
-        Me.Column2.HeaderText = "引用表名称"
-        Me.Column2.Name = "Column2"
-        '
-        'Column3
-        '
-        Me.Column3.HeaderText = "引用表项名称"
-        Me.Column3.Name = "Column3"
         '
         'UpdateSummaryReportForm
         '

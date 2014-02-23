@@ -31,12 +31,13 @@ Partial Class ExportReportForm
         Me.Button4 = New System.Windows.Forms.Button()
         Me.Button5 = New System.Windows.Forms.Button()
         Me.Button6 = New System.Windows.Forms.Button()
+        Me.SaveFileDialog1 = New System.Windows.Forms.SaveFileDialog()
         Me.SuspendLayout()
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(30, 26)
+        Me.Label1.Location = New System.Drawing.Point(11, 15)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(53, 12)
         Me.Label1.TabIndex = 20
@@ -46,14 +47,15 @@ Partial Class ExportReportForm
         '
         Me.ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox1.FormattingEnabled = True
-        Me.ComboBox1.Location = New System.Drawing.Point(89, 23)
+        Me.ComboBox1.Items.AddRange(New Object() {"定价调价军品主要原材料价格表", "定价调价军品辅助材料价格表", "定价调价军品外购件价格表", "定价调价军品外协件价格表", "备品备件价格明细表", "产品定额工时统计表"})
+        Me.ComboBox1.Location = New System.Drawing.Point(70, 12)
         Me.ComboBox1.Name = "ComboBox1"
-        Me.ComboBox1.Size = New System.Drawing.Size(187, 20)
+        Me.ComboBox1.Size = New System.Drawing.Size(340, 20)
         Me.ComboBox1.TabIndex = 19
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(304, 21)
+        Me.Button1.Location = New System.Drawing.Point(429, 11)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(57, 21)
         Me.Button1.TabIndex = 21
@@ -64,14 +66,15 @@ Partial Class ExportReportForm
         '
         Me.ListBox1.FormattingEnabled = True
         Me.ListBox1.ItemHeight = 12
-        Me.ListBox1.Location = New System.Drawing.Point(37, 61)
+        Me.ListBox1.Items.AddRange(New Object() {"定价调价军品外购件价格表", "定价调价军品外协件价格表"})
+        Me.ListBox1.Location = New System.Drawing.Point(18, 50)
         Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(261, 148)
+        Me.ListBox1.Size = New System.Drawing.Size(392, 148)
         Me.ListBox1.TabIndex = 22
         '
         'Button2
         '
-        Me.Button2.Location = New System.Drawing.Point(304, 61)
+        Me.Button2.Location = New System.Drawing.Point(429, 55)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(57, 21)
         Me.Button2.TabIndex = 23
@@ -80,7 +83,7 @@ Partial Class ExportReportForm
         '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(304, 88)
+        Me.Button3.Location = New System.Drawing.Point(429, 82)
         Me.Button3.Name = "Button3"
         Me.Button3.Size = New System.Drawing.Size(57, 21)
         Me.Button3.TabIndex = 24
@@ -89,7 +92,7 @@ Partial Class ExportReportForm
         '
         'Button4
         '
-        Me.Button4.Location = New System.Drawing.Point(304, 115)
+        Me.Button4.Location = New System.Drawing.Point(429, 109)
         Me.Button4.Name = "Button4"
         Me.Button4.Size = New System.Drawing.Size(57, 21)
         Me.Button4.TabIndex = 25
@@ -98,7 +101,7 @@ Partial Class ExportReportForm
         '
         'Button5
         '
-        Me.Button5.Location = New System.Drawing.Point(304, 142)
+        Me.Button5.Location = New System.Drawing.Point(429, 136)
         Me.Button5.Name = "Button5"
         Me.Button5.Size = New System.Drawing.Size(57, 21)
         Me.Button5.TabIndex = 26
@@ -107,7 +110,7 @@ Partial Class ExportReportForm
         '
         'Button6
         '
-        Me.Button6.Location = New System.Drawing.Point(304, 188)
+        Me.Button6.Location = New System.Drawing.Point(429, 177)
         Me.Button6.Name = "Button6"
         Me.Button6.Size = New System.Drawing.Size(57, 21)
         Me.Button6.TabIndex = 27
@@ -118,7 +121,7 @@ Partial Class ExportReportForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(382, 225)
+        Me.ClientSize = New System.Drawing.Size(502, 213)
         Me.Controls.Add(Me.Button6)
         Me.Controls.Add(Me.Button5)
         Me.Controls.Add(Me.Button4)
@@ -143,4 +146,5 @@ Partial Class ExportReportForm
     Friend WithEvents Button4 As System.Windows.Forms.Button
     Friend WithEvents Button5 As System.Windows.Forms.Button
     Friend WithEvents Button6 As System.Windows.Forms.Button
+    Friend WithEvents SaveFileDialog1 As System.Windows.Forms.SaveFileDialog
 End Class

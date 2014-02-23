@@ -22,19 +22,20 @@ Partial Class MainForm
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim TreeNode27 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品主要原材料价格表")
-        Dim TreeNode28 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品辅助材料价格表")
-        Dim TreeNode29 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品外购件价格表")
-        Dim TreeNode30 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品外协件价格表")
-        Dim TreeNode31 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表1", New System.Windows.Forms.TreeNode() {TreeNode29, TreeNode30})
-        Dim TreeNode32 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("备品备件价格明细表")
-        Dim TreeNode33 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("产品定额工时统计表")
-        Dim TreeNode34 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表2.1", New System.Windows.Forms.TreeNode() {TreeNode32, TreeNode33})
-        Dim TreeNode35 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表2", New System.Windows.Forms.TreeNode() {TreeNode34})
-        Dim TreeNode36 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("项目1", New System.Windows.Forms.TreeNode() {TreeNode27, TreeNode28, TreeNode31, TreeNode35})
-        Dim TreeNode37 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报价单位A", New System.Windows.Forms.TreeNode() {TreeNode36})
-        Dim TreeNode38 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("2014年度", New System.Windows.Forms.TreeNode() {TreeNode37})
-        Dim TreeNode39 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报表总览", New System.Windows.Forms.TreeNode() {TreeNode38})
+        Me.components = New System.ComponentModel.Container()
+        Dim TreeNode1 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品主要原材料价格表")
+        Dim TreeNode2 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品辅助材料价格表")
+        Dim TreeNode3 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品外购件价格表")
+        Dim TreeNode4 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品外协件价格表")
+        Dim TreeNode5 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表1", New System.Windows.Forms.TreeNode() {TreeNode3, TreeNode4})
+        Dim TreeNode6 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("备品备件价格明细表")
+        Dim TreeNode7 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("产品定额工时统计表")
+        Dim TreeNode8 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表2.1", New System.Windows.Forms.TreeNode() {TreeNode6, TreeNode7})
+        Dim TreeNode9 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表2", New System.Windows.Forms.TreeNode() {TreeNode8})
+        Dim TreeNode10 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("项目1", New System.Windows.Forms.TreeNode() {TreeNode1, TreeNode2, TreeNode5, TreeNode9})
+        Dim TreeNode11 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报价单位A", New System.Windows.Forms.TreeNode() {TreeNode10})
+        Dim TreeNode12 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("2014年度", New System.Windows.Forms.TreeNode() {TreeNode11})
+        Dim TreeNode13 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报表总览", New System.Windows.Forms.TreeNode() {TreeNode12})
         Me.TreeView1 = New System.Windows.Forms.TreeView()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
@@ -58,14 +59,11 @@ Partial Class MainForm
         Me.Column7 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column6 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Column8 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.TabPage2 = New System.Windows.Forms.TabPage()
-        Me.Button2 = New System.Windows.Forms.Button()
-        Me.DataGridView2 = New System.Windows.Forms.DataGridView()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.文件ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.导入ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripMenuItem0 = New System.Windows.Forms.ToolStripMenuItem()
         Me.退出ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.报表管理ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.明细表管理ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -73,12 +71,15 @@ Partial Class MainForm
         Me.ToolStripMenuItem3 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem2 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
+        Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.TabPage2.SuspendLayout()
-        CType(Me.DataGridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip1.SuspendLayout()
+        Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'TreeView1
@@ -87,39 +88,39 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.TreeView1.Location = New System.Drawing.Point(12, 51)
         Me.TreeView1.Name = "TreeView1"
-        TreeNode27.Name = "节点4"
-        TreeNode27.Text = "定价调价军品主要原材料价格表"
-        TreeNode27.ToolTipText = "定价调价军品主要原材料价格表"
-        TreeNode28.Name = "节点5"
-        TreeNode28.Text = "定价调价军品辅助材料价格表"
-        TreeNode28.ToolTipText = "定价调价军品辅助材料价格表"
-        TreeNode29.Name = "节点7"
-        TreeNode29.Text = "定价调价军品外购件价格表"
-        TreeNode29.ToolTipText = "定价调价军品外购件价格表"
-        TreeNode30.Name = "节点8"
-        TreeNode30.Text = "定价调价军品外协件价格表"
-        TreeNode30.ToolTipText = "定价调价军品外协件价格表"
-        TreeNode31.Name = "节点6"
-        TreeNode31.Text = "汇总表1"
-        TreeNode32.Name = "节点11"
-        TreeNode32.Text = "备品备件价格明细表"
-        TreeNode32.ToolTipText = "备品备件价格明细表"
-        TreeNode33.Name = "节点12"
-        TreeNode33.Text = "产品定额工时统计表"
-        TreeNode33.ToolTipText = "产品定额工时统计表"
-        TreeNode34.Name = "节点10"
-        TreeNode34.Text = "汇总表2.1"
-        TreeNode35.Name = "节点9"
-        TreeNode35.Text = "汇总表2"
-        TreeNode36.Name = "节点3"
-        TreeNode36.Text = "项目1"
-        TreeNode37.Name = "节点2"
-        TreeNode37.Text = "报价单位A"
-        TreeNode38.Name = "节点1"
-        TreeNode38.Text = "2014年度"
-        TreeNode39.Name = "节点0"
-        TreeNode39.Text = "报表总览"
-        Me.TreeView1.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode39})
+        TreeNode1.Name = "节点4"
+        TreeNode1.Text = "定价调价军品主要原材料价格表"
+        TreeNode1.ToolTipText = "定价调价军品主要原材料价格表"
+        TreeNode2.Name = "节点5"
+        TreeNode2.Text = "定价调价军品辅助材料价格表"
+        TreeNode2.ToolTipText = "定价调价军品辅助材料价格表"
+        TreeNode3.Name = "节点7"
+        TreeNode3.Text = "定价调价军品外购件价格表"
+        TreeNode3.ToolTipText = "定价调价军品外购件价格表"
+        TreeNode4.Name = "节点8"
+        TreeNode4.Text = "定价调价军品外协件价格表"
+        TreeNode4.ToolTipText = "定价调价军品外协件价格表"
+        TreeNode5.Name = "节点6"
+        TreeNode5.Text = "汇总表1"
+        TreeNode6.Name = "节点11"
+        TreeNode6.Text = "备品备件价格明细表"
+        TreeNode6.ToolTipText = "备品备件价格明细表"
+        TreeNode7.Name = "节点12"
+        TreeNode7.Text = "产品定额工时统计表"
+        TreeNode7.ToolTipText = "产品定额工时统计表"
+        TreeNode8.Name = "节点10"
+        TreeNode8.Text = "汇总表2.1"
+        TreeNode9.Name = "节点9"
+        TreeNode9.Text = "汇总表2"
+        TreeNode10.Name = "节点3"
+        TreeNode10.Text = "项目1"
+        TreeNode11.Name = "节点2"
+        TreeNode11.Text = "报价单位A"
+        TreeNode12.Name = "节点1"
+        TreeNode12.Text = "2014年度"
+        TreeNode13.Name = "节点0"
+        TreeNode13.Text = "报表总览"
+        Me.TreeView1.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode13})
         Me.TreeView1.Size = New System.Drawing.Size(267, 527)
         Me.TreeView1.TabIndex = 0
         '
@@ -129,7 +130,6 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TabControl1.Controls.Add(Me.TabPage1)
-        Me.TabControl1.Controls.Add(Me.TabPage2)
         Me.TabControl1.Location = New System.Drawing.Point(285, 51)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
@@ -307,40 +307,6 @@ Partial Class MainForm
         Me.Column8.HeaderText = "审价备注"
         Me.Column8.Name = "Column8"
         '
-        'TabPage2
-        '
-        Me.TabPage2.Controls.Add(Me.Button2)
-        Me.TabPage2.Controls.Add(Me.DataGridView2)
-        Me.TabPage2.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage2.Name = "TabPage2"
-        Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(878, 505)
-        Me.TabPage2.TabIndex = 1
-        Me.TabPage2.Text = "定价调价军品主要原材料价格表"
-        Me.TabPage2.UseVisualStyleBackColor = True
-        '
-        'Button2
-        '
-        Me.Button2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.Button2.Location = New System.Drawing.Point(794, 22)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(64, 33)
-        Me.Button2.TabIndex = 2
-        Me.Button2.Text = "保存"
-        Me.Button2.UseVisualStyleBackColor = True
-        '
-        'DataGridView2
-        '
-        Me.DataGridView2.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.DataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView2.Location = New System.Drawing.Point(13, 22)
-        Me.DataGridView2.Name = "DataGridView2"
-        Me.DataGridView2.RowTemplate.Height = 23
-        Me.DataGridView2.Size = New System.Drawing.Size(751, 468)
-        Me.DataGridView2.TabIndex = 0
-        '
         'Label1
         '
         Me.Label1.AutoSize = True
@@ -371,21 +337,21 @@ Partial Class MainForm
         '
         '文件ToolStripMenuItem
         '
-        Me.文件ToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.导入ToolStripMenuItem, Me.退出ToolStripMenuItem})
+        Me.文件ToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem0, Me.退出ToolStripMenuItem})
         Me.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem"
         Me.文件ToolStripMenuItem.Size = New System.Drawing.Size(44, 21)
         Me.文件ToolStripMenuItem.Text = "文件"
         '
-        '导入ToolStripMenuItem
+        'ToolStripMenuItem0
         '
-        Me.导入ToolStripMenuItem.Name = "导入ToolStripMenuItem"
-        Me.导入ToolStripMenuItem.Size = New System.Drawing.Size(100, 22)
-        Me.导入ToolStripMenuItem.Text = "导入"
+        Me.ToolStripMenuItem0.Name = "ToolStripMenuItem0"
+        Me.ToolStripMenuItem0.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem0.Text = "导入"
         '
         '退出ToolStripMenuItem
         '
         Me.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem"
-        Me.退出ToolStripMenuItem.Size = New System.Drawing.Size(100, 22)
+        Me.退出ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.退出ToolStripMenuItem.Text = "退出"
         '
         '报表管理ToolStripMenuItem
@@ -398,32 +364,48 @@ Partial Class MainForm
         '明细表管理ToolStripMenuItem
         '
         Me.明细表管理ToolStripMenuItem.Name = "明细表管理ToolStripMenuItem"
-        Me.明细表管理ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.明细表管理ToolStripMenuItem.Size = New System.Drawing.Size(136, 22)
         Me.明细表管理ToolStripMenuItem.Text = "添加明细表"
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(136, 22)
         Me.ToolStripMenuItem1.Text = "更新明细表"
         '
         'ToolStripMenuItem3
         '
         Me.ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem3.Size = New System.Drawing.Size(136, 22)
         Me.ToolStripMenuItem3.Text = "添加汇总表"
         '
         'ToolStripMenuItem2
         '
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(136, 22)
         Me.ToolStripMenuItem2.Text = "更新汇总表"
         '
         'ToolStripMenuItem
         '
         Me.ToolStripMenuItem.Name = "ToolStripMenuItem"
-        Me.ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem.Size = New System.Drawing.Size(136, 22)
         Me.ToolStripMenuItem.Text = "导出模板"
+        '
+        'OpenFileDialog1
+        '
+        Me.OpenFileDialog1.FileName = "OpenFileDialog1"
+        '
+        'ContextMenuStrip1
+        '
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem6})
+        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(153, 48)
+        '
+        'ToolStripMenuItem6
+        '
+        Me.ToolStripMenuItem6.Name = "ToolStripMenuItem6"
+        Me.ToolStripMenuItem6.Size = New System.Drawing.Size(152, 22)
+        Me.ToolStripMenuItem6.Text = "导出"
         '
         'MainForm
         '
@@ -444,10 +426,9 @@ Partial Class MainForm
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage1.PerformLayout()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.TabPage2.ResumeLayout(False)
-        CType(Me.DataGridView2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
+        Me.ContextMenuStrip1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -455,16 +436,13 @@ Partial Class MainForm
     Friend WithEvents TreeView1 As System.Windows.Forms.TreeView
     Friend WithEvents TabControl1 As System.Windows.Forms.TabControl
     Friend WithEvents TabPage1 As System.Windows.Forms.TabPage
-    Friend WithEvents TabPage2 As System.Windows.Forms.TabPage
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents DataGridView1 As System.Windows.Forms.DataGridView
     Friend WithEvents MenuStrip1 As System.Windows.Forms.MenuStrip
     Friend WithEvents 文件ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents 导入ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem0 As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents 退出ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents DataGridView2 As System.Windows.Forms.DataGridView
-    Friend WithEvents Button2 As System.Windows.Forms.Button
     Friend WithEvents 报表管理ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents 明细表管理ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem3 As System.Windows.Forms.ToolStripMenuItem
@@ -490,5 +468,9 @@ Partial Class MainForm
     Friend WithEvents ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem1 As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem2 As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents OpenFileDialog1 As System.Windows.Forms.OpenFileDialog
+    Friend WithEvents ContextMenuStrip1 As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents ToolStripMenuItem6 As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents FolderBrowserDialog1 As System.Windows.Forms.FolderBrowserDialog
 
 End Class
