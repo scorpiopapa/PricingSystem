@@ -120,6 +120,18 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ReportMasterTable.vb" />
+    <Compile Include="BuyerLogin.Designer.vb">
+      <DependentUpon>BuyerLogin.vb</DependentUpon>
+    </Compile>
+    <Compile Include="BuyerLogin.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SellerLogin.Designer.vb">
+      <DependentUpon>SellerLogin.vb</DependentUpon>
+    </Compile>
+    <Compile Include="SellerLogin.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UpdateReportForm.Designer.vb">
       <DependentUpon>UpdateReportForm.vb</DependentUpon>
     </Compile>
@@ -164,6 +176,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BuyerLogin.resx">
+      <DependentUpon>BuyerLogin.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SellerLogin.resx">
+      <DependentUpon>SellerLogin.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UpdateReportForm.resx">
       <DependentUpon>UpdateReportForm.vb</DependentUpon>

@@ -1,4 +1,5 @@
 ﻿Imports Microsoft.Office.Interop
+Imports System.Data.OleDb
 Public Class MainForm
 
 #If DEBUG Then
@@ -10,6 +11,9 @@ Public Class MainForm
     Private TEMPLATE_FILE As String = Application.StartupPath + "\temp.xls"
 #End If
 
+    Public LoginUserName As String
+    Public LoginForm As Form
+
     Private Sub 明细表管理ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 明细表管理ToolStripMenuItem.Click
         ShowForm(AddReportForm)
 
@@ -20,7 +24,17 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub MainForm_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
+        LoginForm.Dispose()
+    End Sub
+
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Label1.Text = LoginUserName
+
+        If TypeOf (LoginForm) Is SellerLogin Then
+            ToolStripMenuItem8.Visible = False
+        End If
+
         With TreeView1
             .HideSelection = False
             .ExpandAll()
@@ -83,30 +97,33 @@ Public Class MainForm
 
         Dim view As New DataGridView
         Dim btn As New Button With {.Text = "保存"}
+        Dim group As New Panel
 
         With tp.Controls
             .Add(view)
-            .Add(btn)
+            .Add(group)
+            group.Controls.Add(btn)
         End With
 
-        With view
-            .Left = 13
-            .Top = 22
-            .Width = 751
-            .Height = 468
-        End With
+        view.Dock = DockStyle.Fill
+        group.Width = 100
+        group.Dock = DockStyle.Right
 
-        With btn
-            .Left = 794
-            .Top = view.Top
-            .Width = 64
-            .Height = 33
-        End With
+        btn.Top = 20
+        btn.Width = 65
+        btn.Left = (group.Width - btn.Width) / 2
 
-        'view.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
-        'btn.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        Using conn As New OleDbConnection(CONNECTION_STRING)
+            conn.Open()
 
-        'tp.Select()
+            Dim sql As String = "select * from test_table"
+            Dim cmd As New OleDbCommand(sql, conn)
+            Dim adapter As New OleDbDataAdapter(cmd)
+            Dim table As New DataTable
+
+            adapter.Fill(table)
+            view.DataSource = table
+        End Using
 
         Return tp
     End Function
