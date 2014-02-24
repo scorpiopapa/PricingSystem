@@ -23,19 +23,20 @@ Partial Class MainForm
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim TreeNode1 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品主要原材料价格表")
-        Dim TreeNode2 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品辅助材料价格表")
-        Dim TreeNode3 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品外购件价格表")
-        Dim TreeNode4 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品外协件价格表")
-        Dim TreeNode5 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表1", New System.Windows.Forms.TreeNode() {TreeNode3, TreeNode4})
-        Dim TreeNode6 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("备品备件价格明细表")
-        Dim TreeNode7 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("产品定额工时统计表")
-        Dim TreeNode8 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表2.1", New System.Windows.Forms.TreeNode() {TreeNode6, TreeNode7})
-        Dim TreeNode9 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表2", New System.Windows.Forms.TreeNode() {TreeNode8})
-        Dim TreeNode10 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("项目1", New System.Windows.Forms.TreeNode() {TreeNode1, TreeNode2, TreeNode5, TreeNode9})
-        Dim TreeNode11 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报价单位A", New System.Windows.Forms.TreeNode() {TreeNode10})
-        Dim TreeNode12 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("2014年度", New System.Windows.Forms.TreeNode() {TreeNode11})
-        Dim TreeNode13 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报表总览", New System.Windows.Forms.TreeNode() {TreeNode12})
+        Dim TreeNode14 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品主要原材料价格表")
+        Dim TreeNode15 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品辅助材料价格表")
+        Dim TreeNode16 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品外购件价格表")
+        Dim TreeNode17 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("定价调价军品外协件价格表")
+        Dim TreeNode18 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表1", New System.Windows.Forms.TreeNode() {TreeNode16, TreeNode17})
+        Dim TreeNode19 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("备品备件价格明细表")
+        Dim TreeNode20 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("产品定额工时统计表")
+        Dim TreeNode21 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表2.1", New System.Windows.Forms.TreeNode() {TreeNode19, TreeNode20})
+        Dim TreeNode22 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("汇总表2", New System.Windows.Forms.TreeNode() {TreeNode21})
+        Dim TreeNode23 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("项目1", New System.Windows.Forms.TreeNode() {TreeNode14, TreeNode15, TreeNode18, TreeNode22})
+        Dim TreeNode24 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报价单位A", New System.Windows.Forms.TreeNode() {TreeNode23})
+        Dim TreeNode25 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("2014年度", New System.Windows.Forms.TreeNode() {TreeNode24})
+        Dim TreeNode26 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报表总览", New System.Windows.Forms.TreeNode() {TreeNode25})
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.TreeView1 = New System.Windows.Forms.TreeView()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
@@ -88,39 +89,39 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.TreeView1.Location = New System.Drawing.Point(12, 51)
         Me.TreeView1.Name = "TreeView1"
-        TreeNode1.Name = "节点4"
-        TreeNode1.Text = "定价调价军品主要原材料价格表"
-        TreeNode1.ToolTipText = "定价调价军品主要原材料价格表"
-        TreeNode2.Name = "节点5"
-        TreeNode2.Text = "定价调价军品辅助材料价格表"
-        TreeNode2.ToolTipText = "定价调价军品辅助材料价格表"
-        TreeNode3.Name = "节点7"
-        TreeNode3.Text = "定价调价军品外购件价格表"
-        TreeNode3.ToolTipText = "定价调价军品外购件价格表"
-        TreeNode4.Name = "节点8"
-        TreeNode4.Text = "定价调价军品外协件价格表"
-        TreeNode4.ToolTipText = "定价调价军品外协件价格表"
-        TreeNode5.Name = "节点6"
-        TreeNode5.Text = "汇总表1"
-        TreeNode6.Name = "节点11"
-        TreeNode6.Text = "备品备件价格明细表"
-        TreeNode6.ToolTipText = "备品备件价格明细表"
-        TreeNode7.Name = "节点12"
-        TreeNode7.Text = "产品定额工时统计表"
-        TreeNode7.ToolTipText = "产品定额工时统计表"
-        TreeNode8.Name = "节点10"
-        TreeNode8.Text = "汇总表2.1"
-        TreeNode9.Name = "节点9"
-        TreeNode9.Text = "汇总表2"
-        TreeNode10.Name = "节点3"
-        TreeNode10.Text = "项目1"
-        TreeNode11.Name = "节点2"
-        TreeNode11.Text = "报价单位A"
-        TreeNode12.Name = "节点1"
-        TreeNode12.Text = "2014年度"
-        TreeNode13.Name = "节点0"
-        TreeNode13.Text = "报表总览"
-        Me.TreeView1.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode13})
+        TreeNode14.Name = "节点4"
+        TreeNode14.Text = "定价调价军品主要原材料价格表"
+        TreeNode14.ToolTipText = "定价调价军品主要原材料价格表"
+        TreeNode15.Name = "节点5"
+        TreeNode15.Text = "定价调价军品辅助材料价格表"
+        TreeNode15.ToolTipText = "定价调价军品辅助材料价格表"
+        TreeNode16.Name = "节点7"
+        TreeNode16.Text = "定价调价军品外购件价格表"
+        TreeNode16.ToolTipText = "定价调价军品外购件价格表"
+        TreeNode17.Name = "节点8"
+        TreeNode17.Text = "定价调价军品外协件价格表"
+        TreeNode17.ToolTipText = "定价调价军品外协件价格表"
+        TreeNode18.Name = "节点6"
+        TreeNode18.Text = "汇总表1"
+        TreeNode19.Name = "节点11"
+        TreeNode19.Text = "备品备件价格明细表"
+        TreeNode19.ToolTipText = "备品备件价格明细表"
+        TreeNode20.Name = "节点12"
+        TreeNode20.Text = "产品定额工时统计表"
+        TreeNode20.ToolTipText = "产品定额工时统计表"
+        TreeNode21.Name = "节点10"
+        TreeNode21.Text = "汇总表2.1"
+        TreeNode22.Name = "节点9"
+        TreeNode22.Text = "汇总表2"
+        TreeNode23.Name = "节点3"
+        TreeNode23.Text = "项目1"
+        TreeNode24.Name = "节点2"
+        TreeNode24.Text = "报价单位A"
+        TreeNode25.Name = "节点1"
+        TreeNode25.Text = "2014年度"
+        TreeNode26.Name = "节点0"
+        TreeNode26.Text = "报表总览"
+        Me.TreeView1.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode26})
         Me.TreeView1.Size = New System.Drawing.Size(267, 527)
         Me.TreeView1.TabIndex = 0
         '
@@ -418,6 +419,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.TabControl1)
         Me.Controls.Add(Me.TreeView1)
         Me.Controls.Add(Me.MenuStrip1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "MainForm"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual

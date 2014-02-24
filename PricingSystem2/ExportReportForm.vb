@@ -4,7 +4,7 @@ Public Class ExportReportForm
 #If DEBUG Then
     Private TEMPLATE_FILE As String = "..\..\..\报价模板.xls"
 #Else
-    Private TEMPLATE_FILE As String = Application.StartupPath + "\报价模板.xls"
+    Private TEMPLATE_FILE As String = Application.StartupPath + "\config\报价模板.xls"
 #End If
     Private Sub ExportReportForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ListBox1.Items.Clear()
