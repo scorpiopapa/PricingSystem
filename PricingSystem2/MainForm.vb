@@ -2,14 +2,14 @@
 Imports System.Data.OleDb
 Public Class MainForm
 
-#If DEBUG Then
-    Private REPORT_FILE As String = "..\..\..\报价单位A 项目1 2014年报价.xls"
-    Private REPORT_FILE_BAK As String = "..\..\..\报价单位A 项目1 2014年报价"
-#Else
-    Private REPORT_FILE As String = Application.StartupPath + "\config\报价单位A 项目1 2014年报价.xls"
-    Private REPORT_FILE_BAK As String = Application.StartupPath + "\config\报价单位A 项目1 2014年报价"
-    Private TEMPLATE_FILE As String = Application.StartupPath + "\config\temp.xls"
-#End If
+    '#If DEBUG Then
+    '    Private REPORT_FILE As String = "..\..\..\报价单位A 项目1 2014年报价.xls"
+    '    Private REPORT_FILE_BAK As String = "..\..\..\报价单位A 项目1 2014年报价"
+    '#Else
+    '    Private REPORT_FILE As String = Application.StartupPath + "\config\报价单位A 项目1 2014年报价.xls"
+    '    Private REPORT_FILE_BAK As String = Application.StartupPath + "\config\报价单位A 项目1 2014年报价"
+    '    Private TEMPLATE_FILE As String = Application.StartupPath + "\config\temp.xls"
+    '#End If
 
     Public LoginUserName As String
     Public LoginForm As Form

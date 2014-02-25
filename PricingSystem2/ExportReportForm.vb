@@ -1,11 +1,6 @@
 ﻿Imports Microsoft.Office.Interop
 Imports System.Data.OleDb
 Public Class ExportReportForm
-#If DEBUG Then
-    Private TEMPLATE_FILE As String = "..\..\..\报价模板.xls"
-#Else
-    Private TEMPLATE_FILE As String = Application.StartupPath + "\config\报价模板.xls"
-#End If
     Private Sub ExportReportForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ListBox1.Items.Clear()
 
@@ -26,22 +21,134 @@ Public Class ExportReportForm
     End Sub
 
     Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
+        If ListBox1.Items.Count = 0 Then
+            FormUtils.ShowErrorMessage(EMPTY_REPORT_LIST)
+            Exit Sub
+        End If
+
+        Dim fileName As String = ""
+        Dim excelApp As Excel.Application = Nothing
+        Dim wb As Excel.Workbook = Nothing
+
         With SaveFileDialog1
             .Filter = String.Format("Excel 2003 (*{0})|*{0}", ".xls")
 
             Dim result As DialogResult = .ShowDialog()
-            If result = Windows.Forms.DialogResult.OK Then
-                Dim fileName As String = .FileName
-
-                My.Computer.FileSystem.CopyFile(TEMPLATE_FILE, .FileName, True)
-                My.Computer.FileSystem.CopyFile(DB_FILE, My.Computer.FileSystem.GetParentPath(.FileName) + "\" + My.Computer.FileSystem.GetName(DB_FILE), True)
-
-                Dim excelApp As New Excel.Application
-                excelApp.Visible = True
-                excelApp.Workbooks.Open(.FileName)
-
+            If result <> Windows.Forms.DialogResult.OK Then
+                Exit Sub
             End If
+
+            fileName = .FileName
         End With
+
+        Try
+            Using conn As New OleDbConnection(CONNECTION_STRING)
+                excelApp = New Excel.Application
+#If DEBUG Then
+                excelApp.Visible = True
+#End If
+
+                wb = excelApp.Workbooks.Open(BLANK_FILE, [ReadOnly]:=True)
+                For i As Integer = 0 To ListBox1.Items.Count - 1
+                    Dim sql As String = String.Format("select {0} from {1} where {2} = '{3}' order by {4}", _
+                                                      ReportMasterTable.COLUMN_NAME, ReportMasterTable.TABLE_NAME, _
+                                                      ReportMasterTable.REPORT_NAME, ListBox1.Items(i), ReportMasterTable.ORDER)
+                    Dim cmd As New OleDbCommand(sql, conn)
+                    Dim adapter As New OleDbDataAdapter(cmd)
+                    Dim table As New DataTable
+
+                    adapter.Fill(table)
+
+                    Dim sht As Excel.Worksheet
+
+                    If i = 0 Then
+                        sht = wb.Worksheets(1)
+                    Else
+                        sht = wb.Worksheets.Add
+                    End If
+
+                    With sht
+                        .Name = ListBox1.Items(i)
+
+                        .Cells(FormUtils.REPORT_NAME_ROW, START_COLUMN).value = .Name
+
+                        Dim endColumn As Integer = START_COLUMN + table.Rows.Count
+
+                        Dim r As Excel.Range = .Range(.Cells(FormUtils.REPORT_NAME_ROW, START_COLUMN), .Cells(FormUtils.REPORT_NAME_ROW, endColumn))
+                        r.Merge()
+                        r.HorizontalAlignment = Excel.Constants.xlCenter
+                        r.Font.Bold = True
+                        r.Font.Size = REPORT_NAME_FONT_SIZE
+
+                        Dim bidPriceColumn As Integer
+                        Dim offerPriceColumn As Integer
+
+                        For j As Integer = 0 To table.Rows.Count
+                            Dim curColumn As Integer = START_COLUMN + j
+                            r = .Cells(HEAD_ROW, curColumn)
+
+                            If j = 0 Then
+                                r.Value = NO_TEXT
+                            Else
+                                r.Value = table.Rows(j - 1)(0)
+                            End If
+                            r.Font.Bold = True
+                            r.HorizontalAlignment = Excel.Constants.xlCenter
+
+                            If r.Value = BID_PRICE_TEXT Then
+                                bidPriceColumn = curColumn
+                            ElseIf r.Value = OFFER_PRICE_TEXT Then
+                                offerPriceColumn = curColumn
+                            End If
+
+                            r = .Columns(curColumn)
+                            r.EntireColumn.AutoFit()
+                        Next
+
+                        r = .Cells(MARKER_ROW, START_COLUMN)
+                        r.Value = MARKER_TEXT1
+                        r.HorizontalAlignment = Excel.Constants.xlLeft
+
+                        r = .Cells(MARKER_ROW, endColumn)
+                        r.Value = MARKER_TEXT2
+                        r.HorizontalAlignment = Excel.Constants.xlRight
+
+                        r = .Cells(SUMMARY_ROW, START_COLUMN + 1)
+                        r.Value = SUMMARY_TEXT
+
+                        AddSumFormula(.Cells(SUMMARY_ROW, bidPriceColumn))
+                        AddSumFormula(.Cells(SUMMARY_ROW, offerPriceColumn))
+
+                        r = .Range(.Cells(HEAD_ROW, START_COLUMN), .Cells(SUMMARY_ROW, endColumn))
+                        FormUtils.DrawGrid(r)
+                    End With
+                Next
+            End Using
+
+            wb.SaveAs(fileName)
+            wb.Close()
+            excelApp.Quit()
+
+            With My.Computer.FileSystem
+                .CopyFile(DB_FILE, .GetParentPath(fileName) + "\" + .GetName(DB_FILE), True)
+            End With
+        Catch ex As Exception
+            Log.WriteLine(ex)
+
+            If Not IsNothing(wb) Then
+                wb.Close(False)
+            End If
+
+            If Not IsNothing(excelApp) Then
+                excelApp.Quit()
+            End If
+
+            ShowErrorMessage(ex.Message)
+        Finally
+            wb = Nothing
+            excelApp = Nothing
+        End Try
+
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
