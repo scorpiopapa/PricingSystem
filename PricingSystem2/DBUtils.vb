@@ -1,9 +1,9 @@
 ﻿Public Class DBUtils
 
-    Public Shared Function BuildClause(elements() As String, types As List(Of String)) As String
+    Public Shared Function BuildClause(elements As List(Of String), types As List(Of String)) As String
         Dim clause As String = ""
 
-        For i As Integer = 0 To elements.Length - 1
+        For i As Integer = 0 To elements.Count - 1
             Dim columnName As String = elements(i)
             Dim type As String = types(i)
 

@@ -13,6 +13,7 @@ Public Class MainForm
 
     Public LoginUserName As String
     Public LoginForm As Form
+    Public ComName As String
 
     Private Sub 明细表管理ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 明细表管理ToolStripMenuItem.Click
         ShowForm(AddReportForm)
@@ -32,7 +33,9 @@ Public Class MainForm
         Label1.Text = LoginUserName
 
         If TypeOf (LoginForm) Is SellerLogin Then
-            ToolStripMenuItem8.Visible = False
+            ReportManage.Visible = False
+        Else
+            ImportTemplate.Visible = False
         End If
 
         With TreeView1
@@ -40,20 +43,22 @@ Public Class MainForm
             .ExpandAll()
             .SelectedNode = .Nodes(0)
 
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(1).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(1).ContextMenuStrip = ContextMenuStrip1
 
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(2).ContextMenuStrip = ContextMenuStrip1
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(2).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(2).Nodes(1).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(2).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(2).Nodes(0).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(2).Nodes(1).ContextMenuStrip = ContextMenuStrip1
 
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).ContextMenuStrip = ContextMenuStrip1
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            .Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).Nodes(1).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
+            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).Nodes(1).ContextMenuStrip = ContextMenuStrip1
         End With
+    End Sub
 
+    Private Sub InitTreeView()
 
     End Sub
 
@@ -81,17 +86,31 @@ Public Class MainForm
     End Sub
 
     Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView1.AfterSelect
-        If TreeView1.SelectedNode.Text.EndsWith("表") Then
+        SwitchTabPage()
+    End Sub
+
+    Private Sub TreeView1_DoubleClick(sender As Object, e As EventArgs) Handles TreeView1.DoubleClick
+        SwitchTabPage()
+    End Sub
+
+    Private Sub SwitchTabPage()
+        If TreeView1.SelectedNode.Text.Trim = REPORT_SUMMARY_TEXT Then
+            TabControl1.SelectedIndex = 0
+        ElseIf TreeView1.SelectedNode.Nodes.Count = 0 Then
             With TabControl1
-                Dim tp As TabPage = CreateTabPage(TreeView1.SelectedNode.Text.Trim)
+                Dim title As String = TreeView1.SelectedNode.Text
+                For Each t As TabPage In .TabPages
+                    If title = t.Text Then
+                        .SelectedTab = t
+                        Exit Sub
+                    End If
+                Next
+                Dim tp As TabPage = CreateTabPage(title)
                 .TabPages.Add(tp)
                 .SelectedTab = tp
             End With
-        ElseIf TreeView1.SelectedNode.Text.Trim = "报表总览" Then
-            TabControl1.SelectedIndex = 0
         End If
     End Sub
-
     Private Function CreateTabPage(title As String) As TabPage
         Dim tp As New TabPage(title)
 
@@ -116,13 +135,14 @@ Public Class MainForm
         Using conn As New OleDbConnection(CONNECTION_STRING)
             conn.Open()
 
-            Dim sql As String = "select * from test_table"
+            Dim sql As String = String.Format("select * from {0}", title)
             Dim cmd As New OleDbCommand(sql, conn)
             Dim adapter As New OleDbDataAdapter(cmd)
             Dim table As New DataTable
 
             adapter.Fill(table)
             view.DataSource = table
+            view.Columns(0).Visible = False
         End Using
 
         Return tp
@@ -136,8 +156,65 @@ Public Class MainForm
         'End If
     End Sub
 
-    Private Sub ToolStripMenuItem0_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem0.Click
-        OpenFileDialog1.ShowDialog()
+    Private Sub ToolStripMenuItem0_Click(sender As Object, e As EventArgs) Handles ImportTemplate.Click
+        ImportForm.ShowDialog(Me)
+
+        Dim year As Integer = ImportForm.DateTimePicker1.Value.Year
+        Dim projectName As String = ImportForm.TextBox1.Text.Trim
+
+        Dim fileName As String
+
+        With OpenFileDialog1
+            .Filter = ExcelFilter()
+
+            Dim result As DialogResult = .ShowDialog()
+
+            If result <> Windows.Forms.DialogResult.OK Then
+                Exit Sub
+            End If
+
+            fileName = .FileName
+        End With
+
+        Dim excelApp As Excel.Application = Nothing
+        Dim wb As Excel.Workbook = Nothing
+
+        Try
+            excelApp = New Excel.Application
+            wb = excelApp.Workbooks.Open(fileName)
+
+            Dim n As TreeNode
+            With TreeView1
+                n = .Nodes(0).Nodes.Add(year & YEAR_TEXT)
+                n = n.Nodes.Add(projectName)
+            End With
+
+            For Each sht As Excel.Worksheet In wb.Worksheets
+                n.Nodes.Add(sht.Name)
+            Next
+
+            TreeView1.ExpandAll()
+
+            wb.Close(False)
+            excelApp.Quit()
+
+            wb = Nothing
+            excelApp = Nothing
+
+        Catch ex As Exception
+            Log.WriteLine(ex)
+            FormUtils.ShowErrorMessage(ex.Message)
+
+            If Not IsNothing(wb) Then
+                wb.Close(False)
+                wb = Nothing
+            End If
+
+            If Not IsNothing(excelApp) Then
+                excelApp.Quit()
+                excelApp = Nothing
+            End If
+        End Try
     End Sub
 
     Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem6.Click

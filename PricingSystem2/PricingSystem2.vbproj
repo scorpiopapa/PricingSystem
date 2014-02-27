@@ -114,6 +114,12 @@
     </Compile>
     <Compile Include="DBUtils.vb" />
     <Compile Include="FormUtils.vb" />
+    <Compile Include="ImportForm.Designer.vb">
+      <DependentUpon>ImportForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ImportForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Log.vb" />
     <Compile Include="MainForm.vb">
       <SubType>Form</SubType>
@@ -176,6 +182,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddSummaryReportForm.resx">
       <DependentUpon>AddSummaryReportForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImportForm.resx">
+      <DependentUpon>ImportForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>

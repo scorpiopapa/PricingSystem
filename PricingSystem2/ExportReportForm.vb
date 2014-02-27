@@ -31,7 +31,7 @@ Public Class ExportReportForm
         Dim wb As Excel.Workbook = Nothing
 
         With SaveFileDialog1
-            .Filter = String.Format("Excel 2003 (*{0})|*{0}", ".xls")
+            .Filter = ExcelFilter()
 
             Dim result As DialogResult = .ShowDialog()
             If result <> Windows.Forms.DialogResult.OK Then
