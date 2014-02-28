@@ -15,6 +15,8 @@ Public Class MainForm
     Public LoginForm As Form
     Public ComName As String
 
+    'Private view As New DataGridView
+
     Private Sub 明细表管理ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 明细表管理ToolStripMenuItem.Click
         ShowForm(AddReportForm)
 
@@ -31,6 +33,7 @@ Public Class MainForm
 
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Label1.Text = LoginUserName
+        Label2.Text = ComName
 
         If TypeOf (LoginForm) Is SellerLogin Then
             ReportManage.Visible = False
@@ -107,6 +110,7 @@ Public Class MainForm
                 Next
                 Dim tp As TabPage = CreateTabPage(title)
                 .TabPages.Add(tp)
+                AddTabControls(tp)
                 .SelectedTab = tp
             End With
         End If
@@ -132,28 +136,72 @@ Public Class MainForm
         btn.Width = 65
         btn.Left = (group.Width - btn.Width) / 2
 
-        Using conn As New OleDbConnection(CONNECTION_STRING)
-            conn.Open()
-
-            Dim sql As String = String.Format("select * from {0}", title)
-            Dim cmd As New OleDbCommand(sql, conn)
-            Dim adapter As New OleDbDataAdapter(cmd)
-            Dim table As New DataTable
-
-            adapter.Fill(table)
-            view.DataSource = table
-            view.Columns(0).Visible = False
-        End Using
+        Dim cs As New List(Of Object)
+        cs.Add(view)
+        cs.Add(btn)
+        tp.Tag = cs
 
         Return tp
     End Function
 
+    Private Sub AddTabControls(tp As TabPage)
+        Dim table As DataTable
+
+        Using conn As New OleDbConnection(CONNECTION_STRING)
+            Dim dao As New AccessDao(conn)
+            Dim sql As String = String.Format("select * from {0}", tp.Text)
+            table = dao.SelectTable(sql)
+
+            'view.DataSource = table
+
+            If table.Rows.Count = 0 Then
+                'table.NewRow()
+                'Dim sql2 As String = String.Format("select {0}, {1} from {2} where {3} = '{4}' order by {5}", _
+                '                            ReportMasterTable.COLUMN_NAME, ReportMasterTable.COLUMN_TYPE, ReportMasterTable.TABLE_NAME, _
+                '                            ReportMasterTable.REPORT_NAME, tp.Text, ReportMasterTable.ORDER)
+                'Dim table2 As DataTable = dao.SelectTable(sql2)
+
+                'With view
+                '    .Columns.Add(New DataGridViewTextBoxColumn() With {.HeaderText = ITEM_ID, .DataPropertyName = ITEM_ID, .ValueType = DBConstants.INT})
+
+                '    For Each row As DataRow In table2.Rows
+                '        Dim dbvalue = row(0)
+                '        Dim c As New DataGridViewTextBoxColumn() With {.HeaderText = dbvalue, .DataPropertyName = row(0), .ValueType = DBUtils.GetDataColumnType(row(1))}
+                '        .Columns.Add(c)
+                '    Next
+                'End With
+            End If
+        End Using
+
+        Dim cs As List(Of Object) = tp.Tag
+        Dim view As DataGridView = CType(cs(0), DataGridView)
+        Dim btn As Button = CType(cs(1), Button)
+
+        With view
+            .DataSource = table
+            .Columns(ITEM_ID_COLUMN).Visible = False
+            '到期日
+            .Columns(MATAURE_DATE_COLUMN).Visible = False
+            '所属项目
+            .Columns(PROJECT_NAME_COLUMN).Visible = False
+            '报价单位
+            .Columns(BID_COMPANY).Visible = False
+        End With
+
+        Dim handler As New SaveButtonDelegate(tp.Text, table, view)
+        AddHandler btn.Click, AddressOf handler.SaveButtonDelegate
+    End Sub
+
+    Private Sub SaveButtonDelegate(sender As Object, e As EventArgs)
+
+    End Sub
+
     Private Sub TreeView1_MouseUp(sender As Object, e As MouseEventArgs) Handles TreeView1.MouseUp
-        'If e.Button = Windows.Forms.MouseButtons.Right Then
-        '    If TreeView1.SelectedNode.Text.Contains("项目") Then
-        '        TreeView1.SelectedNode.ContextMenuStrip = ContextMenuStrip1
-        '    End If
-        'End If
+        If e.Button = Windows.Forms.MouseButtons.Right Then
+            If TreeView1.SelectedNode.Nodes.Count = 0 Then
+                TreeView1.SelectedNode.ContextMenuStrip = ContextMenuStrip1
+            End If
+        End If
     End Sub
 
     Private Sub ToolStripMenuItem0_Click(sender As Object, e As EventArgs) Handles ImportTemplate.Click

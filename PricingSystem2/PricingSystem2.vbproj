@@ -99,7 +99,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessDao.vb" />
-    <Compile Include="AccessService.vb" />
     <Compile Include="AddReportForm.Designer.vb">
       <DependentUpon>AddReportForm.vb</DependentUpon>
     </Compile>
@@ -135,6 +134,7 @@
     <Compile Include="BuyerLogin.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="SaveButtonDelegate.vb" />
     <Compile Include="SellerLogin.Designer.vb">
       <DependentUpon>SellerLogin.vb</DependentUpon>
     </Compile>
