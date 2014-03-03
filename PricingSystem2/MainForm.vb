@@ -43,8 +43,8 @@ Public Class MainForm
 
         With TreeView1
             .HideSelection = False
-            .ExpandAll()
-            .SelectedNode = .Nodes(0)
+            '.ExpandAll()
+            '.SelectedNode = .Nodes(0)
 
             '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
             '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
@@ -59,6 +59,8 @@ Public Class MainForm
             '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
             '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).Nodes(1).ContextMenuStrip = ContextMenuStrip1
         End With
+
+        RefreshTreeView()
     End Sub
 
     Private Sub InitTreeView()
@@ -204,6 +206,66 @@ Public Class MainForm
         End If
     End Sub
 
+    Private Sub RefreshTreeView()
+        Using conn As New OleDbConnection(CONNECTION_STRING)
+            Dim sql As String = String.Format("select * from {0} order by {1} desc, {2}, {3}, {4}", _
+                                              ReportTreeTable.TABLE_NAME, ReportTreeTable.YEAR, _
+                                              ReportTreeTable.PROJECT_NAME, ReportTreeTable.COMPANY_NAME, ReportTreeTable.REPORT_NAME)
+            Dim dao As New AccessDao(conn)
+            Dim table As DataTable = dao.SelectTable(sql)
+
+            Dim data As New List(Of List(Of String))
+            For Each row As DataRow In table.Rows
+                Dim l As New List(Of String)
+                With l
+                    .Add(row(ReportTreeTable.YEAR))
+                    .Add(row(ReportTreeTable.COMPANY_NAME))
+                    .Add(row(ReportTreeTable.PROJECT_NAME))
+                    .Add(row(ReportTreeTable.REPORT_NAME))
+                End With
+
+                data.Add(l)
+            Next
+
+            With TreeView1
+                For Each n As TreeNode In .Nodes(0).Nodes
+                    n.Remove()
+                Next
+
+                Dim years As Dictionary(Of String, List(Of List(Of String))) = Group(data)
+
+                ' add year
+                For Each y As String In years.Keys
+                    Dim yearNode As TreeNode = .Nodes(0).Nodes.Add(y)
+                    Dim companyValues As List(Of List(Of String)) = years.Item(y)
+                    Dim companies As Dictionary(Of String, List(Of List(Of String))) = Group(companyValues)
+
+                    ' add company
+                    For Each company As String In companies.Keys
+                        Dim companyNode As TreeNode = yearNode.Nodes.Add(company)
+                        Dim projectValues As List(Of List(Of String)) = companies.Item(company)
+                        Dim projects As Dictionary(Of String, List(Of List(Of String))) = Group(projectValues)
+
+                        ' add project
+                        For Each project As String In projects.Keys
+                            Dim projectNode As TreeNode = companyNode.Nodes.Add(project)
+                            Dim reportValues As List(Of List(Of String)) = projects.Item(project)
+                            Dim reports As Dictionary(Of String, List(Of List(Of String))) = Group(reportValues)
+
+                            ' add report
+                            For Each report As String In reports.Keys
+                                projectNode.Nodes.Add(report)
+                            Next
+                        Next
+                    Next
+                Next
+
+                .ExpandAll()
+                .SelectedNode = .Nodes(0)
+            End With
+        End Using
+    End Sub
+
     Private Sub ToolStripMenuItem0_Click(sender As Object, e As EventArgs) Handles ImportTemplate.Click
         ImportForm.ShowDialog(Me)
 
@@ -226,22 +288,28 @@ Public Class MainForm
 
         Dim excelApp As Excel.Application = Nothing
         Dim wb As Excel.Workbook = Nothing
+        Dim tran As OleDbTransaction = Nothing
 
         Try
             excelApp = New Excel.Application
             wb = excelApp.Workbooks.Open(fileName)
 
-            Dim n As TreeNode
-            With TreeView1
-                n = .Nodes(0).Nodes.Add(year & YEAR_TEXT)
-                n = n.Nodes.Add(projectName)
-            End With
+            Using conn As New OleDbConnection(CONNECTION_STRING)
+                Dim dao As New AccessDao(conn)
+                Dim sql As String
 
-            For Each sht As Excel.Worksheet In wb.Worksheets
-                n.Nodes.Add(sht.Name)
-            Next
+                For Each sht As Excel.Worksheet In wb.Worksheets
+                    sql = String.Format("select * from {0} where year={1} and company_name='{2}' and project_name='{3}' and report_name='{4}'", _
+                                        ReportTreeTable.TABLE_NAME, year, ComName, projectName, sht.Name)
+                    Dim table As DataTable = dao.SelectTable(sql)
 
-            TreeView1.ExpandAll()
+                    If table.Rows.Count = 0 Then
+                        sql = String.Format("insert into {0} values({1},'{2}','{3}','{4}')", _
+                                                          ReportTreeTable.TABLE_NAME, year, ComName, projectName, sht.Name)
+                        dao.InsertTable(sql)
+                    End If
+                Next
+            End Using
 
             wb.Close(False)
             excelApp.Quit()
@@ -249,8 +317,14 @@ Public Class MainForm
             wb = Nothing
             excelApp = Nothing
 
+            RefreshTreeView()
+
         Catch ex As Exception
             Log.WriteLine(ex)
+
+            If Not IsNothing(tran) Then
+                tran.Rollback()
+            End If
             FormUtils.ShowErrorMessage(ex.Message)
 
             If Not IsNothing(wb) Then
@@ -264,6 +338,7 @@ Public Class MainForm
             End If
         End Try
     End Sub
+
 
     Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem6.Click
         With FolderBrowserDialog1
@@ -280,4 +355,6 @@ Public Class MainForm
             End If
         End With
     End Sub
+
+
 End Class

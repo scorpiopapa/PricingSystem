@@ -113,6 +113,7 @@
     </Compile>
     <Compile Include="DBUtils.vb" />
     <Compile Include="FormUtils.vb" />
+    <Compile Include="GroupGenerator.vb" />
     <Compile Include="ImportForm.Designer.vb">
       <DependentUpon>ImportForm.vb</DependentUpon>
     </Compile>
@@ -134,6 +135,7 @@
     <Compile Include="BuyerLogin.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ReportTreeTable.vb" />
     <Compile Include="SaveButtonDelegate.vb" />
     <Compile Include="SellerLogin.Designer.vb">
       <DependentUpon>SellerLogin.vb</DependentUpon>
