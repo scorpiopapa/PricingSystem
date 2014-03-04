@@ -199,11 +199,17 @@ Public Class MainForm
     End Sub
 
     Private Sub TreeView1_MouseUp(sender As Object, e As MouseEventArgs) Handles TreeView1.MouseUp
-        If e.Button = Windows.Forms.MouseButtons.Right Then
-            If TreeView1.SelectedNode.Nodes.Count = 0 Then
-                TreeView1.SelectedNode.ContextMenuStrip = ContextMenuStrip1
+        With TreeView1
+            If e.Button = Windows.Forms.MouseButtons.Right Then
+                If .SelectedNode.Nodes.Count = 0 Then
+                    ' report name selected
+                    .SelectedNode.ContextMenuStrip = ContextMenuStrip1
+                ElseIf .SelectedNode.FullPath.Split("\").Count = 4 Then
+                    ' project name selected
+                    .SelectedNode.ContextMenuStrip = ContextMenuStrip1
+                End If
             End If
-        End If
+        End With
     End Sub
 
     Private Sub RefreshTreeView()
@@ -269,8 +275,8 @@ Public Class MainForm
     Private Sub ToolStripMenuItem0_Click(sender As Object, e As EventArgs) Handles ImportTemplate.Click
         ImportForm.ShowDialog(Me)
 
-        Dim year As Integer = ImportForm.DateTimePicker1.Value.Year
-        Dim projectName As String = ImportForm.TextBox1.Text.Trim
+        Dim year As Integer = FormUtils.ReportYear
+        Dim projectName As String = FormUtils.ProjectName
 
         Dim fileName As String
 
@@ -341,20 +347,116 @@ Public Class MainForm
 
 
     Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem6.Click
+        Dim folderName As String
+
         With FolderBrowserDialog1
             Dim result As DialogResult = .ShowDialog()
-            If result = Windows.Forms.DialogResult.OK Then
-                Dim folderName As String = .SelectedPath
 
-                My.Computer.FileSystem.CopyFile(REPORT_FILE, folderName + "\" + My.Computer.FileSystem.GetName(REPORT_FILE), True)
-                My.Computer.FileSystem.CopyFile(REPORT_FILE_BAK, folderName + "\" + My.Computer.FileSystem.GetName(REPORT_FILE_BAK), True)
-
-                Dim excelApp As New Excel.Application
-                excelApp.Visible = True
-                excelApp.Workbooks.Open(folderName + "\" + My.Computer.FileSystem.GetName(REPORT_FILE))
+            If result <> Windows.Forms.DialogResult.OK Then
+                Exit Sub
             End If
+
+            folderName = .SelectedPath
+
+            'My.Computer.FileSystem.CopyFile(REPORT_FILE, folderName + "\" + My.Computer.FileSystem.GetName(REPORT_FILE), True)
+            'My.Computer.FileSystem.CopyFile(REPORT_FILE_BAK, folderName + "\" + My.Computer.FileSystem.GetName(REPORT_FILE_BAK), True)
+
+            'Dim excelApp As New Excel.Application
+            'excelApp.Visible = True
+            'excelApp.Workbooks.Open(folderName + "\" + My.Computer.FileSystem.GetName(REPORT_FILE))
+
         End With
+
+        Dim reportNames As List(Of String) = FormUtils.FindReportNames(TreeView1.SelectedNode)
+        'Dim name As String = TreeView1.SelectedNode.Text
+        'reportNames.Add(name)
+
+        ExportReport(reportNames)
+
     End Sub
 
+    Private Sub ExportReport(names As List(Of String))
+        Dim excelApp As Excel.Application = Nothing
+        Dim wb As Excel.Workbook = Nothing
+        'Dim sht As Excel.Worksheet = Nothing
 
+#If Not Debug Then
+        Try
+#End If
+            Dim fileName As String = String.Format("{0} {1} {2}年度报价.xls", ComName, FormUtils.ProjectName, FormUtils.ReportYear)
+            FormUtils.ExportReportTemplate(names, fileName)
+
+            excelApp = New Excel.Application
+#If DEBUG Then
+            excelApp.Visible = True
+#End If
+            wb = excelApp.Workbooks.Open(fileName)
+
+            Using conn As New OleDbConnection(CONNECTION_STRING)
+                Dim sql As String
+                Dim dao As New AccessDao(conn)
+                Dim table As DataTable
+
+                For i As Integer = 0 To names.Count - 1
+                    sql = String.Format("select {0} from {1} where {2}='{3}' order by {4}", _
+                                    ReportMasterTable.COLUMN_NAME, ReportMasterTable.TABLE_NAME, _
+                                    ReportMasterTable.REPORT_NAME, names(i), ReportMasterTable.ORDER)
+                    table = dao.SelectTable(sql)
+
+                    Dim elements As New List(Of String)
+                    For Each row As DataRow In table.Rows
+                        elements.Add(row(0))
+                    Next
+
+                    Dim clause As String = DBUtils.BuildClause(elements)
+                    clause = ITEM_ID_COLUMN + "," + clause
+                    sql = String.Format("select {0} from {1}", clause, names(i))
+                    table = dao.SelectTable(sql)
+
+                    Dim sht As Excel.Worksheet = wb.Worksheets(names(i))
+                    Dim curRow As Integer
+                    For j As Integer = 0 To table.Rows.Count - 1
+                        Dim row As DataRow = table.Rows(j)
+                        curRow = DATA_START_ROW + j
+
+                        With sht
+                            .Cells(DATA_START_ROW + j, EXCEL_ITEM_ID_COLUMN).value = row(ITEM_ID_COLUMN)
+                            .Cells(curRow, START_COLUMN).value = j + 1
+
+                            For k As Integer = 1 To table.Columns.Count - 1
+                                .Cells(curRow, START_COLUMN + k).value = row(k)
+                            Next
+                        End With
+                    Next
+
+                    Dim r As Excel.Range = sht.Range(sht.Cells(DATA_START_ROW, START_COLUMN), sht.Cells(curRow, START_COLUMN + table.Columns.Count - 1))
+                    FormUtils.DrawGrid(r)
+                Next
+            End Using
+
+            wb.Close(True)
+            excelApp.Quit()
+
+            wb = Nothing
+        excelApp = Nothing
+
+        FormUtils.ShowInfoMessage(FormUtils.REPORT_DATA_EXPORT_DONE)
+#If Not Debug Then
+        Catch ex As Exception
+            Log.WriteLine(ex)
+
+            FormUtils.ShowErrorMessage(ex.Message)
+
+            If Not IsNothing(wb) Then
+                wb.Close(False)
+                wb = Nothing
+            End If
+
+            If Not IsNothing(excelApp) Then
+                excelApp.Quit()
+                excelApp = Nothing
+            End If
+        End Try
+#End If
+    End Sub
 End Class

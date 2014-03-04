@@ -27,8 +27,8 @@ Public Class ExportReportForm
         End If
 
         Dim fileName As String = ""
-        Dim excelApp As Excel.Application = Nothing
-        Dim wb As Excel.Workbook = Nothing
+        'Dim excelApp As Excel.Application = Nothing
+        'Dim wb As Excel.Workbook = Nothing
 
         With SaveFileDialog1
             .Filter = ExcelFilter()
@@ -41,113 +41,120 @@ Public Class ExportReportForm
             fileName = .FileName
         End With
 
-        Try
-            Using conn As New OleDbConnection(CONNECTION_STRING)
-                excelApp = New Excel.Application
-#If DEBUG Then
-                excelApp.Visible = True
-#End If
+        Dim reportNames As New List(Of String)
+        For i As Integer = 0 To ListBox1.Items.Count - 1
+            reportNames.Add(ListBox1.Items(i))
+        Next
 
-                wb = excelApp.Workbooks.Open(BLANK_FILE, [ReadOnly]:=True)
-                For i As Integer = 0 To ListBox1.Items.Count - 1
-                    Dim sql As String = String.Format("select {0} from {1} where {2} = '{3}' order by {4}", _
-                                                      ReportMasterTable.COLUMN_NAME, ReportMasterTable.TABLE_NAME, _
-                                                      ReportMasterTable.REPORT_NAME, ListBox1.Items(i), ReportMasterTable.ORDER)
-                    Dim cmd As New OleDbCommand(sql, conn)
-                    Dim adapter As New OleDbDataAdapter(cmd)
-                    Dim table As New DataTable
+        FormUtils.ExportReportTemplate(reportNames, fileName)
 
-                    adapter.Fill(table)
+        'Try
+        '            Using conn As New OleDbConnection(CONNECTION_STRING)
+        '                excelApp = New Excel.Application
+        '#If DEBUG Then
+        '                excelApp.Visible = True
+        '#End If
 
-                    Dim sht As Excel.Worksheet
+        '                wb = excelApp.Workbooks.Open(BLANK_FILE, [ReadOnly]:=True)
+        '                For i As Integer = 0 To ListBox1.Items.Count - 1
+        '                    Dim sql As String = String.Format("select {0} from {1} where {2} = '{3}' order by {4}", _
+        '                                                      ReportMasterTable.COLUMN_NAME, ReportMasterTable.TABLE_NAME, _
+        '                                                      ReportMasterTable.REPORT_NAME, ListBox1.Items(i), ReportMasterTable.ORDER)
+        '                    Dim cmd As New OleDbCommand(sql, conn)
+        '                    Dim adapter As New OleDbDataAdapter(cmd)
+        '                    Dim table As New DataTable
 
-                    If i = 0 Then
-                        sht = wb.Worksheets(1)
-                    Else
-                        sht = wb.Worksheets.Add
-                    End If
+        '                    adapter.Fill(table)
 
-                    With sht
-                        .Name = ListBox1.Items(i)
+        '                    Dim sht As Excel.Worksheet
 
-                        .Cells(FormUtils.REPORT_NAME_ROW, START_COLUMN).value = .Name
+        '                    If i = 0 Then
+        '                        sht = wb.Worksheets(1)
+        '                    Else
+        '                        sht = wb.Worksheets.Add
+        '                    End If
 
-                        Dim endColumn As Integer = START_COLUMN + table.Rows.Count
+        '                    With sht
+        '                        .Name = ListBox1.Items(i)
 
-                        Dim r As Excel.Range = .Range(.Cells(FormUtils.REPORT_NAME_ROW, START_COLUMN), .Cells(FormUtils.REPORT_NAME_ROW, endColumn))
-                        r.Merge()
-                        r.HorizontalAlignment = Excel.Constants.xlCenter
-                        r.Font.Bold = True
-                        r.Font.Size = REPORT_NAME_FONT_SIZE
+        '                        .Cells(FormUtils.REPORT_NAME_ROW, START_COLUMN).value = .Name
 
-                        Dim bidPriceColumn As Integer
-                        Dim offerPriceColumn As Integer
+        '                        Dim endColumn As Integer = START_COLUMN + table.Rows.Count
 
-                        For j As Integer = 0 To table.Rows.Count
-                            Dim curColumn As Integer = START_COLUMN + j
-                            r = .Cells(HEAD_ROW, curColumn)
+        '                        Dim r As Excel.Range = .Range(.Cells(FormUtils.REPORT_NAME_ROW, START_COLUMN), .Cells(FormUtils.REPORT_NAME_ROW, endColumn))
+        '                        r.Merge()
+        '                        r.HorizontalAlignment = Excel.Constants.xlCenter
+        '                        r.Font.Bold = True
+        '                        r.Font.Size = REPORT_NAME_FONT_SIZE
 
-                            If j = 0 Then
-                                r.Value = NO_TEXT
-                            Else
-                                r.Value = table.Rows(j - 1)(0)
-                            End If
-                            r.Font.Bold = True
-                            r.HorizontalAlignment = Excel.Constants.xlCenter
+        '                        Dim bidPriceColumn As Integer
+        '                        Dim offerPriceColumn As Integer
 
-                            If r.Value = BID_PRICE_TEXT Then
-                                bidPriceColumn = curColumn
-                            ElseIf r.Value = OFFER_PRICE_TEXT Then
-                                offerPriceColumn = curColumn
-                            End If
+        '                        For j As Integer = 0 To table.Rows.Count
+        '                            Dim curColumn As Integer = START_COLUMN + j
+        '                            r = .Cells(HEAD_ROW, curColumn)
 
-                            r = .Columns(curColumn)
-                            r.EntireColumn.AutoFit()
-                        Next
+        '                            If j = 0 Then
+        '                                r.Value = NO_TEXT
+        '                            Else
+        '                                r.Value = table.Rows(j - 1)(0)
+        '                            End If
+        '                            r.Font.Bold = True
+        '                            r.HorizontalAlignment = Excel.Constants.xlCenter
 
-                        r = .Cells(MARKER_ROW, START_COLUMN)
-                        r.Value = MARKER_TEXT1
-                        r.HorizontalAlignment = Excel.Constants.xlLeft
+        '                            If r.Value = BID_PRICE_TEXT Then
+        '                                bidPriceColumn = curColumn
+        '                            ElseIf r.Value = OFFER_PRICE_TEXT Then
+        '                                offerPriceColumn = curColumn
+        '                            End If
 
-                        r = .Cells(MARKER_ROW, endColumn)
-                        r.Value = MARKER_TEXT2
-                        r.HorizontalAlignment = Excel.Constants.xlRight
+        '                            r = .Columns(curColumn)
+        '                            r.EntireColumn.AutoFit()
+        '                        Next
 
-                        r = .Cells(SUMMARY_ROW, START_COLUMN + 1)
-                        r.Value = SUMMARY_TEXT
+        '                        r = .Cells(MARKER_ROW, START_COLUMN)
+        '                        r.Value = MARKER_TEXT1
+        '                        r.HorizontalAlignment = Excel.Constants.xlLeft
 
-                        AddSumFormula(.Cells(SUMMARY_ROW, bidPriceColumn))
-                        AddSumFormula(.Cells(SUMMARY_ROW, offerPriceColumn))
+        '                        r = .Cells(MARKER_ROW, endColumn)
+        '                        r.Value = MARKER_TEXT2
+        '                        r.HorizontalAlignment = Excel.Constants.xlRight
 
-                        r = .Range(.Cells(HEAD_ROW, START_COLUMN), .Cells(SUMMARY_ROW, endColumn))
-                        FormUtils.DrawGrid(r)
-                    End With
-                Next
-            End Using
+        '                        r = .Cells(SUMMARY_ROW, START_COLUMN + 1)
+        '                        r.Value = SUMMARY_TEXT
 
-            wb.SaveAs(fileName)
-            wb.Close()
-            excelApp.Quit()
+        '                        AddSumFormula(.Cells(SUMMARY_ROW, bidPriceColumn))
+        '                        AddSumFormula(.Cells(SUMMARY_ROW, offerPriceColumn))
 
-            With My.Computer.FileSystem
-                .CopyFile(DB_FILE, .GetParentPath(fileName) + "\" + .GetName(DB_FILE), True)
-            End With
-        Catch ex As Exception
-            Log.WriteLine(ex)
+        '                        r = .Range(.Cells(HEAD_ROW, START_COLUMN), .Cells(SUMMARY_ROW, endColumn))
+        '                        FormUtils.DrawGrid(r)
+        '                    End With
+        '                Next
+        '            End Using
 
-            If Not IsNothing(wb) Then
-                wb.Close(False)
-            End If
+        '            wb.SaveAs(fileName)
+        '            wb.Close()
+        '            excelApp.Quit()
 
-            If Not IsNothing(excelApp) Then
-                excelApp.Quit()
-            End If
+        '            With My.Computer.FileSystem
+        '                .CopyFile(DB_FILE, .GetParentPath(fileName) + "\" + .GetName(DB_FILE), True)
+        '            End With
+        '        Catch ex As Exception
+        '            Log.WriteLine(ex)
 
-            ShowErrorMessage(ex.Message)
-        Finally
-            wb = Nothing
-            excelApp = Nothing
-        End Try
+        '            If Not IsNothing(wb) Then
+        '                wb.Close(False)
+        '            End If
+
+        '            If Not IsNothing(excelApp) Then
+        '                excelApp.Quit()
+        '            End If
+
+        '            ShowErrorMessage(ex.Message)
+        '        Finally
+        '            wb = Nothing
+        '            excelApp = Nothing
+        '        End Try
 
     End Sub
 

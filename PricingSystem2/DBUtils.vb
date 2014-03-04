@@ -27,6 +27,20 @@ Public Class DBUtils
         Return clause
     End Function
 
+    Public Shared Function BuildClause(elements As List(Of String)) As String
+        Dim clause As String = ""
+
+        For i As Integer = 0 To elements.Count - 1
+            Dim columnName As String = elements(i)
+
+            clause = clause + columnName + ","
+        Next
+
+        clause = clause.Substring(0, clause.Length - 1)
+
+        Return clause
+    End Function
+
     Public Shared Function GetDataType(type As String) As String
         Dim typeDef As String
 
