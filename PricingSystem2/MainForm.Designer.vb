@@ -23,7 +23,7 @@ Partial Class MainForm
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim TreeNode1 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报表总览")
+        Dim TreeNode2 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报表总览")
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.TreeView1 = New System.Windows.Forms.TreeView()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
@@ -53,6 +53,7 @@ Partial Class MainForm
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.文件ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportTemplate = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImportDataMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.退出ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ReportManage = New System.Windows.Forms.ToolStripMenuItem()
         Me.明细表管理ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -62,9 +63,8 @@ Partial Class MainForm
         Me.ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.ToolStripMenuItem6 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExpotReportMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.导入数据ToolStripMenuItem8 = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -78,9 +78,9 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.TreeView1.Location = New System.Drawing.Point(12, 51)
         Me.TreeView1.Name = "TreeView1"
-        TreeNode1.Name = "节点0"
-        TreeNode1.Text = "报表总览"
-        Me.TreeView1.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode1})
+        TreeNode2.Name = "节点0"
+        TreeNode2.Text = "报表总览"
+        Me.TreeView1.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode2})
         Me.TreeView1.Size = New System.Drawing.Size(267, 527)
         Me.TreeView1.TabIndex = 0
         '
@@ -297,7 +297,7 @@ Partial Class MainForm
         '
         '文件ToolStripMenuItem
         '
-        Me.文件ToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImportTemplate, Me.导入数据ToolStripMenuItem8, Me.退出ToolStripMenuItem})
+        Me.文件ToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImportTemplate, Me.ImportDataMenu, Me.退出ToolStripMenuItem})
         Me.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem"
         Me.文件ToolStripMenuItem.Size = New System.Drawing.Size(44, 21)
         Me.文件ToolStripMenuItem.Text = "文件"
@@ -307,6 +307,12 @@ Partial Class MainForm
         Me.ImportTemplate.Name = "ImportTemplate"
         Me.ImportTemplate.Size = New System.Drawing.Size(152, 22)
         Me.ImportTemplate.Text = "导入模板"
+        '
+        'ImportDataMenu
+        '
+        Me.ImportDataMenu.Name = "ImportDataMenu"
+        Me.ImportDataMenu.Size = New System.Drawing.Size(152, 22)
+        Me.ImportDataMenu.Text = "导入数据"
         '
         '退出ToolStripMenuItem
         '
@@ -357,21 +363,15 @@ Partial Class MainForm
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem6})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ExpotReportMenu})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(101, 26)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(153, 48)
         '
-        'ToolStripMenuItem6
+        'ExpotReportMenu
         '
-        Me.ToolStripMenuItem6.Name = "ToolStripMenuItem6"
-        Me.ToolStripMenuItem6.Size = New System.Drawing.Size(100, 22)
-        Me.ToolStripMenuItem6.Text = "导出"
-        '
-        '导入数据ToolStripMenuItem8
-        '
-        Me.导入数据ToolStripMenuItem8.Name = "导入数据ToolStripMenuItem8"
-        Me.导入数据ToolStripMenuItem8.Size = New System.Drawing.Size(152, 22)
-        Me.导入数据ToolStripMenuItem8.Text = "导入数据"
+        Me.ExpotReportMenu.Name = "ExpotReportMenu"
+        Me.ExpotReportMenu.Size = New System.Drawing.Size(152, 22)
+        Me.ExpotReportMenu.Text = "导出"
         '
         'MainForm
         '
@@ -437,8 +437,8 @@ Partial Class MainForm
     Friend WithEvents ToolStripMenuItem2 As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents OpenFileDialog1 As System.Windows.Forms.OpenFileDialog
     Friend WithEvents ContextMenuStrip1 As System.Windows.Forms.ContextMenuStrip
-    Friend WithEvents ToolStripMenuItem6 As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ExpotReportMenu As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents FolderBrowserDialog1 As System.Windows.Forms.FolderBrowserDialog
-    Friend WithEvents 导入数据ToolStripMenuItem8 As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ImportDataMenu As System.Windows.Forms.ToolStripMenuItem
 
 End Class

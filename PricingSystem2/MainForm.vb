@@ -43,21 +43,6 @@ Public Class MainForm
 
         With TreeView1
             .HideSelection = False
-            '.ExpandAll()
-            '.SelectedNode = .Nodes(0)
-
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(1).ContextMenuStrip = ContextMenuStrip1
-
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(2).ContextMenuStrip = ContextMenuStrip1
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(2).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(2).Nodes(1).ContextMenuStrip = ContextMenuStrip1
-
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).ContextMenuStrip = ContextMenuStrip1
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).Nodes(0).ContextMenuStrip = ContextMenuStrip1
-            '.Nodes(0).Nodes(0).Nodes(0).Nodes(0).Nodes(3).Nodes(0).Nodes(1).ContextMenuStrip = ContextMenuStrip1
         End With
 
         RefreshTreeView()
@@ -301,7 +286,10 @@ Public Class MainForm
             wb = excelApp.Workbooks.Open(fileName)
 
             Using conn As New OleDbConnection(CONNECTION_STRING)
-                Dim dao As New AccessDao(conn)
+                conn.Open()
+                tran = conn.BeginTransaction
+
+                Dim dao As New AccessDao(conn, tran)
                 Dim sql As String
 
                 For Each sht As Excel.Worksheet In wb.Worksheets
@@ -315,6 +303,8 @@ Public Class MainForm
                         dao.InsertTable(sql)
                     End If
                 Next
+
+                tran.Commit()
             End Using
 
             wb.Close(False)
@@ -346,7 +336,7 @@ Public Class MainForm
     End Sub
 
 
-    Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem6.Click
+    Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ExpotReportMenu.Click
         Dim folderName As String
 
         With FolderBrowserDialog1
@@ -357,25 +347,15 @@ Public Class MainForm
             End If
 
             folderName = .SelectedPath
-
-            'My.Computer.FileSystem.CopyFile(REPORT_FILE, folderName + "\" + My.Computer.FileSystem.GetName(REPORT_FILE), True)
-            'My.Computer.FileSystem.CopyFile(REPORT_FILE_BAK, folderName + "\" + My.Computer.FileSystem.GetName(REPORT_FILE_BAK), True)
-
-            'Dim excelApp As New Excel.Application
-            'excelApp.Visible = True
-            'excelApp.Workbooks.Open(folderName + "\" + My.Computer.FileSystem.GetName(REPORT_FILE))
-
         End With
 
         Dim reportNames As List(Of String) = FormUtils.FindReportNames(TreeView1.SelectedNode)
-        'Dim name As String = TreeView1.SelectedNode.Text
-        'reportNames.Add(name)
 
-        ExportReport(reportNames)
+        ExportReport(folderName, reportNames)
 
     End Sub
 
-    Private Sub ExportReport(names As List(Of String))
+    Private Sub ExportReport(folderName As String, names As List(Of String))
         Dim excelApp As Excel.Application = Nothing
         Dim wb As Excel.Workbook = Nothing
         'Dim sht As Excel.Worksheet = Nothing
@@ -383,8 +363,11 @@ Public Class MainForm
 #If Not Debug Then
         Try
 #End If
-            Dim fileName As String = String.Format("{0} {1} {2}年度报价.xls", ComName, FormUtils.ProjectName, FormUtils.ReportYear)
-            FormUtils.ExportReportTemplate(names, fileName)
+        'Dim projectName As String = TreeView1.SelectedNode.FullPath.Split("\")(3)
+        Dim projectName As String = FormUtils.ProjectName
+
+            Dim fileName As String = folderName + "\" + String.Format("{0} {1} {2}年度报价.xls", ComName, projectName, FormUtils.ReportYear)
+        FormUtils.ExportReportTemplate(names, fileName, False)
 
             excelApp = New Excel.Application
 #If DEBUG Then
@@ -438,9 +421,14 @@ Public Class MainForm
             excelApp.Quit()
 
             wb = Nothing
-        excelApp = Nothing
+            excelApp = Nothing
 
-        FormUtils.ShowInfoMessage(FormUtils.REPORT_DATA_EXPORT_DONE)
+        With My.Computer.FileSystem
+            Dim newName As String = fileName.Split(".")(0)
+            .CopyFile(fileName, newName, True)
+        End With
+
+            FormUtils.ShowInfoMessage(FormUtils.REPORT_DATA_EXPORT_DONE)
 #If Not Debug Then
         Catch ex As Exception
             Log.WriteLine(ex)
@@ -458,5 +446,133 @@ Public Class MainForm
             End If
         End Try
 #End If
+    End Sub
+
+
+    Private Sub ImportDataMenu_Click(sender As Object, e As EventArgs) Handles ImportDataMenu.Click
+        Dim fileName As String
+
+        With OpenFileDialog1
+            .Filter = ExcelFilter()
+
+            Dim result As DialogResult = .ShowDialog()
+
+            If result <> Windows.Forms.DialogResult.OK Then
+                Exit Sub
+            End If
+
+            fileName = .FileName
+        End With
+
+        Dim excelApp As Excel.Application = Nothing
+        Dim wb As Excel.Workbook = Nothing
+        Dim tran As OleDbTransaction = Nothing
+
+#If Not Debug Then
+        Try
+#End If
+            excelApp = New Excel.Application
+#If DEBUG Then
+            excelApp.Visible = True
+#End If
+            wb = excelApp.Workbooks.Open(fileName, [ReadOnly]:=True)
+
+        Using conn As New OleDbConnection(CONNECTION_STRING)
+            conn.Open()
+            tran = conn.BeginTransaction
+
+            Dim dao As New AccessDao(conn, tran)
+            Dim sql As String
+
+            For Each sht As Excel.Worksheet In wb.Worksheets
+                sql = String.Format("select * from {0}", sht.Name)
+                Dim table As DataTable = dao.SelectTable(sql)
+
+                Dim itemIds As New List(Of String)
+                For Each row As DataRow In table.Rows
+                    itemIds.Add(row(ITEM_ID_COLUMN))
+                Next
+
+                Dim excelItemIds As New List(Of String)
+
+                With sht
+                    Dim curRow As Integer = DATA_START_ROW
+
+                    While Trim(.Cells(curRow, EXCEL_ITEM_ID_COLUMN).value) <> ""
+                        Dim itemId As String = Trim(.Cells(curRow, EXCEL_ITEM_ID_COLUMN).value)
+                        excelItemIds.Add(itemId)
+
+                        Dim condition As String = String.Format("{0}='{1}'", ITEM_ID_COLUMN, itemId)
+                        Dim targetRows() As DataRow = table.Select(condition)
+
+                        Dim targetRow As DataRow
+                        If IsNothing(targetRows) OrElse targetRows.Length = 0 Then
+                            targetRow = table.NewRow
+                            targetRow(ITEM_ID_COLUMN) = itemId
+                            table.Rows.Add(targetRow)
+                        Else
+                            targetRow = targetRows(0)
+                        End If
+
+                        Dim sql2 As String = String.Format("select count(*) from {0} where {1}='{2}'", _
+                                                           ReportMasterTable.TABLE_NAME, ReportMasterTable.REPORT_NAME, .Name)
+                        Dim columnCount As Integer = dao.SelectTable(sql2).Rows(0)(0)
+
+                        For i As Integer = START_COLUMN + 1 To START_COLUMN + columnCount
+                            Dim columnName As String = Trim(.Cells(HEAD_ROW, i).value)
+                            targetRow(columnName) = Trim(.Cells(curRow, i).value)
+                        Next
+
+                        curRow = curRow + 1
+                    End While
+                End With
+
+                For Each dbId As String In itemIds
+                    If Not excelItemIds.Contains(dbId) Then
+                        ' remove row
+                        For i As Integer = table.Rows.Count - 1 To 0 Step -1
+                            If table.Rows(i)(ITEM_ID_COLUMN) = dbId Then
+                                table.Rows(i).Delete()
+                            End If
+                        Next
+                    End If
+                Next
+
+                Dim adapter As OleDbDataAdapter = dao.SelectTableForUpdate(sql)
+                adapter.Update(table)
+            Next
+
+            tran.Commit()
+        End Using
+
+        FormUtils.ShowInfoMessage(REPORT_DATA_IMPORT_DONE)
+
+            wb.Close(False)
+            excelApp.Quit()
+
+            wb = Nothing
+            excelApp = Nothing
+
+#If Not Debug Then
+        Catch ex As Exception
+            Log.WriteLine(ex)
+
+            If Not IsNothing(tran) Then
+                tran.Rollback()
+            End If
+            FormUtils.ShowErrorMessage(ex.Message)
+
+            If Not IsNothing(wb) Then
+                wb.Close(False)
+                wb = Nothing
+            End If
+
+            If Not IsNothing(excelApp) Then
+                excelApp.Quit()
+                excelApp = Nothing
+            End If
+        End Try
+#End If
+
     End Sub
 End Class
