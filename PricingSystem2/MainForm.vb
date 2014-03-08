@@ -534,7 +534,7 @@ Public Class MainForm
 
                         For i As Integer = START_COLUMN + 1 To START_COLUMN + columnCount
                             Dim columnName As String = Trim(.Cells(HEAD_ROW, i).value)
-                            targetRow(columnName) = Trim(.Cells(curRow, i).value)
+                            targetRow(columnName) = DBUtils.ToDBValue(Trim(.Cells(curRow, i).value))
                         Next
 
                         curRow = curRow + 1
@@ -545,6 +545,7 @@ Public Class MainForm
                     If Not excelItemIds.Contains(dbId) Then
                         ' remove row
                         For i As Integer = table.Rows.Count - 1 To 0 Step -1
+                            Log.WriteLine(table)
                             If table.Rows(i)(ITEM_ID_COLUMN) = dbId Then
                                 table.Rows(i).Delete()
                             End If

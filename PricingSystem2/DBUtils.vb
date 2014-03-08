@@ -55,19 +55,22 @@ Public Class DBUtils
         Return typeDef
     End Function
 
-    Public Shared Function GetDataColumnType(type As String) As System.Type
-        Dim typeDef As System.Type
-
-        If type = NUMBER_TYPE Then
-            typeDef = DBConstants.INT
-        ElseIf type = DATE_TYPE Then
-            typeDef = DBConstants.DT
-        Else
-            typeDef = DBConstants.STR
-        End If
-
-        Return typeDef
+    Public Shared Function ToDBValue(o As Object) As Object
+        Return IIf(IsNothing(o) OrElse o.ToString = "", DBNull.Value, o)
     End Function
+    'Public Shared Function GetDataColumnType(type As String) As System.Type
+    '    Dim typeDef As System.Type
+
+    '    If type = NUMBER_TYPE Then
+    '        typeDef = DBConstants.INT
+    '    ElseIf type = DATE_TYPE Then
+    '        typeDef = DBConstants.DT
+    '    Else
+    '        typeDef = DBConstants.STR
+    '    End If
+
+    '    Return typeDef
+    'End Function
 
     'Public Shared Function QueryTable(sql As String, conn As OleDbConnection, Optional tran As OleDbTransaction = Nothing) As DataTable
     '    Dim cmd As New OleDbCommand(sql, conn)
