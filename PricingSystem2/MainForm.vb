@@ -175,12 +175,8 @@ Public Class MainForm
             .Columns(BID_COMPANY).Visible = False
         End With
 
-        Dim handler As New SaveButtonDelegate(tp.Text, table, view)
+        Dim handler As New SaveButtonDelegate(tp.Text, table)
         AddHandler btn.Click, AddressOf handler.SaveButtonDelegate
-    End Sub
-
-    Private Sub SaveButtonDelegate(sender As Object, e As EventArgs)
-
     End Sub
 
     Private Sub TreeView1_MouseUp(sender As Object, e As MouseEventArgs) Handles TreeView1.MouseUp
@@ -279,33 +275,12 @@ Public Class MainForm
 
         Dim excelApp As Excel.Application = Nothing
         Dim wb As Excel.Workbook = Nothing
-        Dim tran As OleDbTransaction = Nothing
 
         Try
             excelApp = New Excel.Application
             wb = excelApp.Workbooks.Open(fileName)
 
-            Using conn As New OleDbConnection(CONNECTION_STRING)
-                conn.Open()
-                tran = conn.BeginTransaction
-
-                Dim dao As New AccessDao(conn, tran)
-                Dim sql As String
-
-                For Each sht As Excel.Worksheet In wb.Worksheets
-                    sql = String.Format("select * from {0} where year={1} and company_name='{2}' and project_name='{3}' and report_name='{4}'", _
-                                        ReportTreeTable.TABLE_NAME, year, ComName, projectName, sht.Name)
-                    Dim table As DataTable = dao.SelectTable(sql)
-
-                    If table.Rows.Count = 0 Then
-                        sql = String.Format("insert into {0} values({1},'{2}','{3}','{4}')", _
-                                                          ReportTreeTable.TABLE_NAME, year, ComName, projectName, sht.Name)
-                        dao.InsertTable(sql)
-                    End If
-                Next
-
-                tran.Commit()
-            End Using
+            UpdateReportTreeTable(wb, year, projectName, ComName)
 
             wb.Close(False)
             excelApp.Quit()
@@ -318,9 +293,6 @@ Public Class MainForm
         Catch ex As Exception
             Log.WriteLine(ex)
 
-            If Not IsNothing(tran) Then
-                tran.Rollback()
-            End If
             FormUtils.ShowErrorMessage(ex.Message)
 
             If Not IsNothing(wb) Then
@@ -335,6 +307,40 @@ Public Class MainForm
         End Try
     End Sub
 
+    Private Sub UpdateReportTreeTable(wb As Excel.Workbook, year As Integer, Optional pname As String = Nothing, Optional cname As String = Nothing)
+        Dim tran As OleDbTransaction = Nothing
+
+        Using conn As New OleDbConnection(CONNECTION_STRING)
+            Try
+                conn.Open()
+                tran = conn.BeginTransaction
+
+                Dim dao As New AccessDao(conn, tran)
+                Dim sql As String
+
+                For Each sht As Excel.Worksheet In wb.Worksheets
+                    sql = String.Format("select * from {0} where year={1} and company_name='{2}' and project_name='{3}' and report_name='{4}'", _
+                                        ReportTreeTable.TABLE_NAME, year, cname, pname, sht.Name)
+                    Dim table As DataTable = dao.SelectTable(sql)
+
+                    If table.Rows.Count = 0 Then
+                        sql = String.Format("insert into {0} values({1},'{2}','{3}','{4}')", _
+                                                          ReportTreeTable.TABLE_NAME, year, cname, pname, sht.Name)
+                        dao.InsertTable(sql)
+                    End If
+                Next
+
+                tran.Commit()
+            Catch ex As Exception
+                If Not IsNothing(tran) Then
+                    tran.Rollback()
+                End If
+
+                Throw ex
+            End Try
+
+        End Using
+    End Sub
 
     Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ExpotReportMenu.Click
         Dim folderName As String
@@ -366,7 +372,15 @@ Public Class MainForm
         'Dim projectName As String = TreeView1.SelectedNode.FullPath.Split("\")(3)
         Dim projectName As String = FormUtils.ProjectName
 
-            Dim fileName As String = folderName + "\" + String.Format("{0} {1} {2}年度报价.xls", ComName, projectName, FormUtils.ReportYear)
+        Dim fileName As String
+
+        If TypeOf LoginForm Is SellerLogin Then
+            fileName = folderName + "\" + String.Format("{0} {1} {2}年度报价.xls", ComName, projectName, FormUtils.ReportYear)
+        Else
+            Dim ns() As String = TreeView1.SelectedNode.FullPath.Split("\")
+            fileName = folderName + "\" + String.Format("{0} {1} {2}年度报价.xls", ns(2), ns(3), FormUtils.ReportYear)
+        End If
+
         FormUtils.ExportReportTemplate(names, fileName, False)
 
             excelApp = New Excel.Application
@@ -544,6 +558,13 @@ Public Class MainForm
 
             tran.Commit()
         End Using
+
+        Dim parts() As String = fileName.Split(" ")
+        Dim year As Integer = CInt(parts(2).Substring(0, 4))
+        Dim c() As String = parts(0).Split("\")
+        Dim cname As String = c(c.Length - 1)
+        UpdateReportTreeTable(wb, year, parts(1), cname)
+        RefreshTreeView()
 
         FormUtils.ShowInfoMessage(REPORT_DATA_IMPORT_DONE)
 
