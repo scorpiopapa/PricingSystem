@@ -45,6 +45,10 @@ Public Class MainForm
             .HideSelection = False
         End With
 
+        With DataGridView1
+            .ReadOnly = True
+        End With
+
         RefreshTreeView()
     End Sub
 
@@ -77,10 +81,12 @@ Public Class MainForm
 
     Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView1.AfterSelect
         SwitchTabPage()
+        SearchData()
     End Sub
 
     Private Sub TreeView1_DoubleClick(sender As Object, e As EventArgs) Handles TreeView1.DoubleClick
         SwitchTabPage()
+        SearchData()
     End Sub
 
     Private Sub SwitchTabPage()
@@ -102,6 +108,53 @@ Public Class MainForm
             End With
         End If
     End Sub
+
+    Private Sub SearchData()
+        If TreeView1.SelectedNode.Index = 0 Then
+            Exit Sub
+        End If
+
+        Dim baseSql As String = ""
+        Dim sql As String
+        'Dim hasReport As Boolean = True
+
+        Using conn As New OleDbConnection(CONNECTION_STRING)
+            sql = String.Format("select distinct {0} from {1}", ReportMasterTable.REPORT_NAME, ReportTreeTable.TABLE_NAME)
+            Dim dao As New AccessDao(conn)
+            Dim table As DataTable = dao.SelectTable(sql)
+
+            For i As Integer = 0 To table.Rows.Count - 1
+                baseSql = baseSql & String.Format("select {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7} from {8}", _
+                                                  MATAURE_DATE_COLUMN, PROJECT_NAME_COLUMN, BID_COMPANY, ITEM_NAME_COLUMN, _
+                                                  BID_PRICE_COLUMN, BID_COMMENT_COLUMN, OFFER_PRICE_COLUMN, OFFER_COMMENT_COLUMN,
+                                                  table.Rows(0)(0))
+                If i < table.Rows.Count - 1 Then
+                    baseSql = baseSql & " union "
+                End If
+            Next
+        End Using
+
+        If baseSql <> "" Then
+            With DataGridView1
+                For i As Integer = .Columns.Count - 1 To 0 Step -1
+                    .Columns.RemoveAt(i)
+                Next
+            End With
+
+            Using conn As New OleDbConnection(CONNECTION_STRING)
+                Dim dao As New AccessDao(conn)
+                Dim table As DataTable = Nothing
+
+                With TreeView1
+                    'If .SelectedNode.Index = 0 Then
+                    '    table = dao.SelectTable(baseSql)
+                    '    DataGridView1.DataSource = table
+                    'End If
+                End With
+            End Using
+        End If
+    End Sub
+
     Private Function CreateTabPage(title As String) As TabPage
         Dim tp As New TabPage(title)
 
