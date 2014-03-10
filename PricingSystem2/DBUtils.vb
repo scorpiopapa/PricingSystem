@@ -56,7 +56,13 @@ Public Class DBUtils
     End Function
 
     Public Shared Function ToDBValue(o As Object) As Object
-        Return IIf(IsNothing(o) OrElse o.ToString = "", DBNull.Value, o)
+        Dim value As Object = o
+
+        If IsNothing(o) OrElse o.ToString = "" Then
+            value = DBNull.Value
+        End If
+
+        Return value
     End Function
     'Public Shared Function GetDataColumnType(type As String) As System.Type
     '    Dim typeDef As System.Type

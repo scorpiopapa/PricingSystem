@@ -2,15 +2,6 @@
 Imports System.Data.OleDb
 Public Class MainForm
 
-    '#If DEBUG Then
-    '    Private REPORT_FILE As String = "..\..\..\报价单位A 项目1 2014年报价.xls"
-    '    Private REPORT_FILE_BAK As String = "..\..\..\报价单位A 项目1 2014年报价"
-    '#Else
-    '    Private REPORT_FILE As String = Application.StartupPath + "\config\报价单位A 项目1 2014年报价.xls"
-    '    Private REPORT_FILE_BAK As String = Application.StartupPath + "\config\报价单位A 项目1 2014年报价"
-    '    Private TEMPLATE_FILE As String = Application.StartupPath + "\config\temp.xls"
-    '#End If
-
     Public LoginUserName As String
     Public LoginForm As Form
     Public ComName As String
@@ -32,24 +23,30 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Label1.Text = LoginUserName
-        Label2.Text = ComName
+        Try
+            Label1.Text = LoginUserName
+            Label2.Text = ComName
 
-        If TypeOf (LoginForm) Is SellerLogin Then
-            ReportManage.Visible = False
-        Else
-            ImportTemplate.Visible = False
-        End If
+            If TypeOf (LoginForm) Is SellerLogin Then
+                ReportManage.Visible = False
+            Else
+                ImportTemplate.Visible = False
+            End If
 
-        With TreeView1
-            .HideSelection = False
-        End With
+            With TreeView1
+                .HideSelection = False
+            End With
 
-        With DataGridView1
-            .ReadOnly = True
-        End With
+            With DataGridView1
+                .ReadOnly = True
+            End With
 
-        RefreshTreeView()
+            Log.WriteLine("form load - before refresh tree")
+            RefreshTreeView()
+        Catch ex As Exception
+            Log.WriteLine(ex)
+        End Try
+
     End Sub
 
     Private Sub InitTreeView()
@@ -251,6 +248,8 @@ Public Class MainForm
             Dim sql As String = String.Format("select * from {0} order by {1} desc, {2}, {3}, {4}", _
                                               ReportTreeTable.TABLE_NAME, ReportTreeTable.YEAR, _
                                               ReportTreeTable.PROJECT_NAME, ReportTreeTable.COMPANY_NAME, ReportTreeTable.REPORT_NAME)
+            Log.WriteLine("execute sql {0}", sql)
+
             Dim dao As New AccessDao(conn)
             Dim table As DataTable = dao.SelectTable(sql)
 
@@ -267,6 +266,7 @@ Public Class MainForm
                 data.Add(l)
             Next
 
+            Log.WriteLine("generate tree...")
             With TreeView1
                 For Each n As TreeNode In .Nodes(0).Nodes
                     n.Remove()
@@ -303,6 +303,7 @@ Public Class MainForm
                 .ExpandAll()
                 .SelectedNode = .Nodes(0)
             End With
+            Log.WriteLine("generate tree done")
         End Using
     End Sub
 
@@ -361,6 +362,7 @@ Public Class MainForm
     End Sub
 
     Private Sub UpdateReportTreeTable(wb As Excel.Workbook, year As Integer, Optional pname As String = Nothing, Optional cname As String = Nothing)
+        Log.WriteLine("start to update report tree table...")
         Dim tran As OleDbTransaction = Nothing
 
         Using conn As New OleDbConnection(CONNECTION_STRING)
@@ -374,15 +376,18 @@ Public Class MainForm
                 For Each sht As Excel.Worksheet In wb.Worksheets
                     sql = String.Format("select * from {0} where year={1} and company_name='{2}' and project_name='{3}' and report_name='{4}'", _
                                         ReportTreeTable.TABLE_NAME, year, cname, pname, sht.Name)
+                    Log.WriteLine("execute sql {0}", sql)
                     Dim table As DataTable = dao.SelectTable(sql)
 
                     If table.Rows.Count = 0 Then
                         sql = String.Format("insert into {0} values({1},'{2}','{3}','{4}')", _
                                                           ReportTreeTable.TABLE_NAME, year, cname, pname, sht.Name)
+                        Log.WriteLine("execute insert table by {0}", sql)
                         dao.InsertTable(sql)
                     End If
                 Next
 
+                Log.WriteLine("before commit")
                 tran.Commit()
             Catch ex As Exception
                 If Not IsNothing(tran) Then
@@ -393,6 +398,8 @@ Public Class MainForm
             End Try
 
         End Using
+
+        Log.WriteLine("end of update report tree table...")
     End Sub
 
     Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ExpotReportMenu.Click
@@ -517,6 +524,7 @@ Public Class MainForm
 
 
     Private Sub ImportDataMenu_Click(sender As Object, e As EventArgs) Handles ImportDataMenu.Click
+        Log.WriteLine("import report data...")
         Dim fileName As String
 
         With OpenFileDialog1
@@ -543,84 +551,104 @@ Public Class MainForm
             excelApp.Visible = True
 #End If
             wb = excelApp.Workbooks.Open(fileName, [ReadOnly]:=True)
+            Log.WriteLine("open excel for import data")
 
-        Using conn As New OleDbConnection(CONNECTION_STRING)
-            conn.Open()
-            tran = conn.BeginTransaction
+            'Try
 
-            Dim dao As New AccessDao(conn, tran)
-            Dim sql As String
 
-            For Each sht As Excel.Worksheet In wb.Worksheets
-                sql = String.Format("select * from {0}", sht.Name)
-                Dim table As DataTable = dao.SelectTable(sql)
+            Using conn As New OleDbConnection(CONNECTION_STRING)
+                conn.Open()
+                tran = conn.BeginTransaction
 
-                Dim itemIds As New List(Of String)
-                For Each row As DataRow In table.Rows
-                    itemIds.Add(row(ITEM_ID_COLUMN))
-                Next
+                Dim dao As New AccessDao(conn, tran)
+                Dim sql As String
 
-                Dim excelItemIds As New List(Of String)
+                For Each sht As Excel.Worksheet In wb.Worksheets
+                    sql = String.Format("select * from {0}", sht.Name)
+                    Log.WriteLine("execute sql {0}", sql)
 
-                With sht
-                    Dim curRow As Integer = DATA_START_ROW
+                    Dim table As DataTable = dao.SelectTable(sql)
 
-                    While Trim(.Cells(curRow, EXCEL_ITEM_ID_COLUMN).value) <> ""
-                        Dim itemId As String = Trim(.Cells(curRow, EXCEL_ITEM_ID_COLUMN).value)
-                        excelItemIds.Add(itemId)
+                    Dim itemIds As New List(Of String)
+                    For Each row As DataRow In table.Rows
+                        itemIds.Add(row(ITEM_ID_COLUMN))
+                    Next
 
-                        Dim condition As String = String.Format("{0}='{1}'", ITEM_ID_COLUMN, itemId)
-                        Dim targetRows() As DataRow = table.Select(condition)
+                    Dim excelItemIds As New List(Of String)
 
-                        Dim targetRow As DataRow
-                        If IsNothing(targetRows) OrElse targetRows.Length = 0 Then
-                            targetRow = table.NewRow
-                            targetRow(ITEM_ID_COLUMN) = itemId
-                            table.Rows.Add(targetRow)
-                        Else
-                            targetRow = targetRows(0)
-                        End If
+                    With sht
+                        Dim curRow As Integer = DATA_START_ROW
 
-                        Dim sql2 As String = String.Format("select count(*) from {0} where {1}='{2}'", _
-                                                           ReportMasterTable.TABLE_NAME, ReportMasterTable.REPORT_NAME, .Name)
-                        Dim columnCount As Integer = dao.SelectTable(sql2).Rows(0)(0)
+                        While Trim(.Cells(curRow, EXCEL_ITEM_ID_COLUMN).value) <> ""
+                            Dim itemId As String = Trim(.Cells(curRow, EXCEL_ITEM_ID_COLUMN).value)
+                            excelItemIds.Add(itemId)
 
-                        For i As Integer = START_COLUMN + 1 To START_COLUMN + columnCount
-                            Dim columnName As String = Trim(.Cells(HEAD_ROW, i).value)
-                            targetRow(columnName) = DBUtils.ToDBValue(Trim(.Cells(curRow, i).value))
-                        Next
+                            Dim condition As String = String.Format("{0}='{1}'", ITEM_ID_COLUMN, itemId)
+                            Dim targetRows() As DataRow = table.Select(condition)
 
-                        curRow = curRow + 1
-                    End While
-                End With
-
-                For Each dbId As String In itemIds
-                    If Not excelItemIds.Contains(dbId) Then
-                        ' remove row
-                        For i As Integer = table.Rows.Count - 1 To 0 Step -1
-                            Log.WriteLine(table)
-                            If table.Rows(i)(ITEM_ID_COLUMN) = dbId Then
-                                table.Rows(i).Delete()
+                            Dim targetRow As DataRow
+                            If IsNothing(targetRows) OrElse targetRows.Length = 0 Then
+                                targetRow = table.NewRow
+                                targetRow(ITEM_ID_COLUMN) = itemId
+                                table.Rows.Add(targetRow)
+                            Else
+                                targetRow = targetRows(0)
                             End If
-                        Next
-                    End If
+
+                            Dim sql2 As String = String.Format("select count(*) from {0} where {1}='{2}'", _
+                                                               ReportMasterTable.TABLE_NAME, ReportMasterTable.REPORT_NAME, .Name)
+                            Dim columnCount As Integer = dao.SelectTable(sql2).Rows(0)(0)
+
+                            For i As Integer = START_COLUMN + 1 To START_COLUMN + columnCount
+                                Dim columnName As String = Trim(.Cells(HEAD_ROW, i).value)
+                                targetRow(columnName) = DBUtils.ToDBValue(Trim(.Cells(curRow, i).value))
+                                Log.WriteLine("set column {0} value to [{1}]", columnName, DBUtils.ToDBValue(Trim(.Cells(curRow, i).value)).ToString)
+                            Next
+
+                            curRow = curRow + 1
+                        End While
+                    End With
+
+                    For Each dbId As String In itemIds
+                        If Not excelItemIds.Contains(dbId) Then
+                            ' remove row
+                            For i As Integer = table.Rows.Count - 1 To 0 Step -1
+                                Log.WriteLine(table)
+                                If table.Rows(i)(ITEM_ID_COLUMN) = dbId Then
+                                    table.Rows(i).Delete()
+                                End If
+                            Next
+                        End If
+                    Next
+
+                    Log.WriteLine("before update table")
+                    Dim adapter As OleDbDataAdapter = dao.SelectTableForUpdate(sql)
+                    adapter.Update(table)
                 Next
 
-                Dim adapter As OleDbDataAdapter = dao.SelectTableForUpdate(sql)
-                adapter.Update(table)
-            Next
+                Log.WriteLine("before commit")
+                tran.Commit()
+            End Using
+            'Catch ex As Exception
+            '    Log.WriteLine(ex)
+            'End Try
 
-            tran.Commit()
-        End Using
+            Log.WriteLine("parsing tree...")
+            Dim parts() As String = fileName.Split(" ")
+            Log.WriteLine("parts is")
+            Log.WriteLine(parts)
 
-        Dim parts() As String = fileName.Split(" ")
-        Dim year As Integer = CInt(parts(2).Substring(0, 4))
-        Dim c() As String = parts(0).Split("\")
-        Dim cname As String = c(c.Length - 1)
-        UpdateReportTreeTable(wb, year, parts(1), cname)
-        RefreshTreeView()
+            Dim year As Integer = CInt(parts(parts.Length - 1).Substring(0, 4))
+            Log.WriteLine("year is {0}", year)
 
-        FormUtils.ShowInfoMessage(REPORT_DATA_IMPORT_DONE)
+            Dim c() As String = parts(parts.Length - 3).Split("\")
+            Dim cname As String = c(c.Length - 1)
+
+            Log.WriteLine("before update report tree table")
+            UpdateReportTreeTable(wb, year, parts(parts.Length - 2), cname)
+            RefreshTreeView()
+
+            FormUtils.ShowInfoMessage(REPORT_DATA_IMPORT_DONE)
 
             wb.Close(False)
             excelApp.Quit()
@@ -632,9 +660,9 @@ Public Class MainForm
         Catch ex As Exception
             Log.WriteLine(ex)
 
-            If Not IsNothing(tran) Then
-                tran.Rollback()
-            End If
+            'If Not IsNothing(tran) Then
+            '    tran.Rollback()
+            'End If
             FormUtils.ShowErrorMessage(ex.Message)
 
             If Not IsNothing(wb) Then
