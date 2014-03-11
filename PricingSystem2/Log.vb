@@ -1,6 +1,10 @@
 ﻿Imports System.IO
 Public Class Log
+#If DEBUG Then
+    Private Shared ReadOnly LOG_FILE As String = "c:\price.log"
+#Else
     Private Shared ReadOnly LOG_FILE As String = Application.StartupPath + "\price.log"
+#End If
 
     Public Shared Sub WriteLine(msg As String, ParamArray args() As String)
         Console.WriteLine(String.Format(msg, args))
