@@ -6,7 +6,7 @@ Public Class MainForm
     Public LoginForm As Form
     Public ComName As String
 
-    'Private view As New DataGridView
+    Private Shared ReadOnly TITLE = "报价管理系统"
 
     Private Sub 明细表管理ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 明细表管理ToolStripMenuItem.Click
         ShowForm(AddReportForm)
@@ -24,13 +24,15 @@ Public Class MainForm
 
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
-            Label1.Text = LoginUserName
-            Label2.Text = ComName
+            Label1.Text = "操作员：" + LoginUserName
+            Label2.Text = "单位名称：" + ComName
 
             If TypeOf (LoginForm) Is SellerLogin Then
                 ReportManage.Visible = False
+                Me.Text = TITLE + "-报价单位版"
             Else
                 ImportTemplate.Visible = False
+                Me.Text = TITLE + "-审价单位版"
             End If
 
             With TreeView1
@@ -231,18 +233,27 @@ Public Class MainForm
 
     Private Sub TreeView1_MouseUp(sender As Object, e As MouseEventArgs) Handles TreeView1.MouseUp
         With TreeView1
-            If e.Button = Windows.Forms.MouseButtons.Right Then
-                If .SelectedNode.Nodes.Count = 0 Then
-                    ' report name selected
-                    .SelectedNode.ContextMenuStrip = ContextMenuStrip1
-                ElseIf .SelectedNode.FullPath.Split("\").Count = 4 Then
-                    ' project name selected
-                    .SelectedNode.ContextMenuStrip = ContextMenuStrip1
-                End If
+            If e.Button = Windows.Forms.MouseButtons.Right AndAlso CanExport() Then
+                .SelectedNode.ContextMenuStrip = ContextMenuStrip1
             End If
         End With
     End Sub
 
+    Private Function CanExport() As Boolean
+        Dim ret As Boolean = False
+
+        With TreeView1
+            If .SelectedNode.Nodes.Count = 0 Then
+                ' report name selected
+                ret = True
+            ElseIf .SelectedNode.FullPath.Split("\").Count = 4 Then
+                ' project name selected
+                ret = True
+            End If
+        End With
+
+        Return ret
+    End Function
     Private Sub RefreshTreeView()
         Using conn As New OleDbConnection(CONNECTION_STRING)
             Dim sql As String = String.Format("select * from {0} order by {1} desc, {2}, {3}, {4}", _
@@ -403,6 +414,10 @@ Public Class MainForm
     End Sub
 
     Private Sub ToolStripMenuItem6_Click(sender As Object, e As EventArgs) Handles ExpotReportMenu.Click
+        ExportReport()
+    End Sub
+
+    Private Sub ExportReport()
         Dim folderName As String
 
         With FolderBrowserDialog1
@@ -417,11 +432,10 @@ Public Class MainForm
 
         Dim reportNames As List(Of String) = FormUtils.FindReportNames(TreeView1.SelectedNode)
 
-        ExportReport(folderName, reportNames)
-
+        ExportReportData(folderName, reportNames)
     End Sub
 
-    Private Sub ExportReport(folderName As String, names As List(Of String))
+    Private Sub ExportReportData(folderName As String, names As List(Of String))
         Dim excelApp As Excel.Application = Nothing
         Dim wb As Excel.Workbook = Nothing
         'Dim sht As Excel.Worksheet = Nothing
@@ -443,66 +457,66 @@ Public Class MainForm
 
         FormUtils.ExportReportTemplate(names, fileName, False)
 
-            excelApp = New Excel.Application
+        excelApp = New Excel.Application
 #If DEBUG Then
-            excelApp.Visible = True
+        excelApp.Visible = True
 #End If
-            wb = excelApp.Workbooks.Open(fileName)
+        wb = excelApp.Workbooks.Open(fileName)
 
-            Using conn As New OleDbConnection(CONNECTION_STRING)
-                Dim sql As String
-                Dim dao As New AccessDao(conn)
-                Dim table As DataTable
+        Using conn As New OleDbConnection(CONNECTION_STRING)
+            Dim sql As String
+            Dim dao As New AccessDao(conn)
+            Dim table As DataTable
 
-                For i As Integer = 0 To names.Count - 1
-                    sql = String.Format("select {0} from {1} where {2}='{3}' order by {4}", _
-                                    ReportMasterTable.COLUMN_NAME, ReportMasterTable.TABLE_NAME, _
-                                    ReportMasterTable.REPORT_NAME, names(i), ReportMasterTable.ORDER)
-                    table = dao.SelectTable(sql)
+            For i As Integer = 0 To names.Count - 1
+                sql = String.Format("select {0} from {1} where {2}='{3}' order by {4}", _
+                                ReportMasterTable.COLUMN_NAME, ReportMasterTable.TABLE_NAME, _
+                                ReportMasterTable.REPORT_NAME, names(i), ReportMasterTable.ORDER)
+                table = dao.SelectTable(sql)
 
-                    Dim elements As New List(Of String)
-                    For Each row As DataRow In table.Rows
-                        elements.Add(row(0))
-                    Next
-
-                    Dim clause As String = DBUtils.BuildClause(elements)
-                    clause = ITEM_ID_COLUMN + "," + clause
-                    sql = String.Format("select {0} from {1}", clause, names(i))
-                    table = dao.SelectTable(sql)
-
-                    Dim sht As Excel.Worksheet = wb.Worksheets(names(i))
-                    Dim curRow As Integer
-                    For j As Integer = 0 To table.Rows.Count - 1
-                        Dim row As DataRow = table.Rows(j)
-                        curRow = DATA_START_ROW + j
-
-                        With sht
-                            .Cells(DATA_START_ROW + j, EXCEL_ITEM_ID_COLUMN).value = row(ITEM_ID_COLUMN)
-                            .Cells(curRow, START_COLUMN).value = j + 1
-
-                            For k As Integer = 1 To table.Columns.Count - 1
-                                .Cells(curRow, START_COLUMN + k).value = row(k)
-                            Next
-                        End With
-                    Next
-
-                    Dim r As Excel.Range = sht.Range(sht.Cells(DATA_START_ROW, START_COLUMN), sht.Cells(curRow, START_COLUMN + table.Columns.Count - 1))
-                    FormUtils.DrawGrid(r)
+                Dim elements As New List(Of String)
+                For Each row As DataRow In table.Rows
+                    elements.Add(row(0))
                 Next
-            End Using
 
-            wb.Close(True)
-            excelApp.Quit()
+                Dim clause As String = DBUtils.BuildClause(elements)
+                clause = ITEM_ID_COLUMN + "," + clause
+                sql = String.Format("select {0} from {1}", clause, names(i))
+                table = dao.SelectTable(sql)
 
-            wb = Nothing
-            excelApp = Nothing
+                Dim sht As Excel.Worksheet = wb.Worksheets(names(i))
+                Dim curRow As Integer
+                For j As Integer = 0 To table.Rows.Count - 1
+                    Dim row As DataRow = table.Rows(j)
+                    curRow = DATA_START_ROW + j
+
+                    With sht
+                        .Cells(DATA_START_ROW + j, EXCEL_ITEM_ID_COLUMN).value = row(ITEM_ID_COLUMN)
+                        .Cells(curRow, START_COLUMN).value = j + 1
+
+                        For k As Integer = 1 To table.Columns.Count - 1
+                            .Cells(curRow, START_COLUMN + k).value = row(k)
+                        Next
+                    End With
+                Next
+
+                Dim r As Excel.Range = sht.Range(sht.Cells(DATA_START_ROW, START_COLUMN), sht.Cells(curRow, START_COLUMN + table.Columns.Count - 1))
+                FormUtils.DrawGrid(r)
+            Next
+        End Using
+
+        wb.Close(True)
+        excelApp.Quit()
+
+        wb = Nothing
+        excelApp = Nothing
 
         With My.Computer.FileSystem
             Dim newName As String = fileName.Split(".")(0)
             .CopyFile(fileName, newName, True)
         End With
 
-            FormUtils.ShowInfoMessage(FormUtils.REPORT_DATA_EXPORT_DONE)
+        FormUtils.ShowInfoMessage(FormUtils.REPORT_DATA_EXPORT_DONE)
 #If Not Debug Then
         Catch ex As Exception
             Log.WriteLine(ex)
@@ -676,6 +690,23 @@ Public Class MainForm
             End If
         End Try
 #End If
+
+    End Sub
+
+    Private Sub ToolStripMenuItem4_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem4.Click
+        'SwitchTabPage()
+        'TabControl1.SelectedIndex = 0
+        TreeView1.SelectedNode = TreeView1.Nodes(0)
+    End Sub
+
+    Private Sub 导出ToolStripMenuItem5_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem5.Click
+        If IsNothing(TreeView1.SelectedNode) OrElse Not CanExport() Then
+            FormUtils.ShowErrorMessage(EMPTY_EXPORT_ITEM)
+            Exit Sub
+        End If
+
+
+        ExportReport()
 
     End Sub
 End Class
