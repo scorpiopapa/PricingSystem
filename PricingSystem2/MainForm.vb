@@ -159,25 +159,55 @@ Public Class MainForm
 
         Dim view As New DataGridView
         Dim btn As New Button With {.Text = "保存"}
+        Dim deleteButton As New Button With {.Text = "删除"}
+        Dim moveUpButton As New Button With {.Text = "上移"}
+        Dim moveDownButton As New Button With {.Text = "下移"}
         Dim group As New Panel
 
         With tp.Controls
             .Add(view)
             .Add(group)
             group.Controls.Add(btn)
+            group.Controls.Add(deleteButton)
+            group.Controls.Add(moveUpButton)
+            group.Controls.Add(moveDownButton)
         End With
 
         view.Dock = DockStyle.Fill
         group.Width = 100
         group.Dock = DockStyle.Right
 
-        btn.Top = 20
+        Dim padding As Integer = 20
+
+        btn.Top = padding
         btn.Width = 65
         btn.Left = (group.Width - btn.Width) / 2
 
+        With deleteButton
+            .Top = btn.Top + btn.Height + padding
+            .Width = btn.Width
+            .Left = btn.Left
+        End With
+
+        With moveUpButton
+            .Top = deleteButton.Top + deleteButton.Height + padding
+            .Width = btn.Width
+            .Left = btn.Left
+        End With
+
+        With moveDownButton
+            .Top = moveUpButton.Top + moveUpButton.Height + padding
+            .Width = btn.Width
+            .Left = btn.Left
+        End With
+
         Dim cs As New List(Of Object)
-        cs.Add(view)
-        cs.Add(btn)
+        With cs
+            .Add(view)
+            .Add(btn)
+            '.Add(deleteButton)
+        End With
+
         tp.Tag = cs
 
         Return tp
