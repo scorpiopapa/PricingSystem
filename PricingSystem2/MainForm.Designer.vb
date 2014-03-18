@@ -23,7 +23,7 @@ Partial Class MainForm
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim TreeNode1 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("报表总览")
+        Dim TreeNode1 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("数据查询")
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.TreeView1 = New System.Windows.Forms.TreeView()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
@@ -52,9 +52,20 @@ Partial Class MainForm
         Me.Label2 = New System.Windows.Forms.Label()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.ToolStripMenuItem10 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ImportTemplate = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportDataMenu = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExportDataToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GenerateReportTemplate = New System.Windows.Forms.ToolStripMenuItem()
         Me.退出ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.报表模板处理ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.增加报表ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.修改报表ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.删除报表ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.发布模板ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.导入模板ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.选择报表ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.查询ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DataQueryToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.导出查询结果ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ReportManage = New System.Windows.Forms.ToolStripMenuItem()
         Me.明细表管理ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
@@ -65,8 +76,6 @@ Partial Class MainForm
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ExpotReportMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.ToolStripMenuItem4 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripMenuItem5 = New System.Windows.Forms.ToolStripMenuItem()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -81,7 +90,7 @@ Partial Class MainForm
         Me.TreeView1.Location = New System.Drawing.Point(12, 51)
         Me.TreeView1.Name = "TreeView1"
         TreeNode1.Name = "节点0"
-        TreeNode1.Text = "报表总览"
+        TreeNode1.Text = "数据查询"
         Me.TreeView1.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode1})
         Me.TreeView1.Size = New System.Drawing.Size(267, 527)
         Me.TreeView1.TabIndex = 0
@@ -290,7 +299,7 @@ Partial Class MainForm
         '
         'MenuStrip1
         '
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem10, Me.ReportManage})
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem10, Me.报表模板处理ToolStripMenuItem, Me.查询ToolStripMenuItem, Me.ReportManage})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Size = New System.Drawing.Size(1185, 25)
@@ -299,28 +308,96 @@ Partial Class MainForm
         '
         'ToolStripMenuItem10
         '
-        Me.ToolStripMenuItem10.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem4, Me.ToolStripMenuItem5, Me.ImportTemplate, Me.ImportDataMenu, Me.退出ToolStripMenuItem})
+        Me.ToolStripMenuItem10.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImportDataMenu, Me.ExportDataToolStripMenuItem, Me.GenerateReportTemplate, Me.退出ToolStripMenuItem})
         Me.ToolStripMenuItem10.Name = "ToolStripMenuItem10"
-        Me.ToolStripMenuItem10.Size = New System.Drawing.Size(44, 21)
-        Me.ToolStripMenuItem10.Text = "文件"
-        '
-        'ImportTemplate
-        '
-        Me.ImportTemplate.Name = "ImportTemplate"
-        Me.ImportTemplate.Size = New System.Drawing.Size(152, 22)
-        Me.ImportTemplate.Text = "导入模板"
+        Me.ToolStripMenuItem10.Size = New System.Drawing.Size(104, 21)
+        Me.ToolStripMenuItem10.Text = "数据接收与发布"
         '
         'ImportDataMenu
         '
         Me.ImportDataMenu.Name = "ImportDataMenu"
-        Me.ImportDataMenu.Size = New System.Drawing.Size(152, 22)
+        Me.ImportDataMenu.Size = New System.Drawing.Size(124, 22)
         Me.ImportDataMenu.Text = "导入数据"
+        '
+        'ExportDataToolStripMenuItem
+        '
+        Me.ExportDataToolStripMenuItem.Name = "ExportDataToolStripMenuItem"
+        Me.ExportDataToolStripMenuItem.Size = New System.Drawing.Size(124, 22)
+        Me.ExportDataToolStripMenuItem.Text = "导出数据"
+        '
+        'GenerateReportTemplate
+        '
+        Me.GenerateReportTemplate.Name = "GenerateReportTemplate"
+        Me.GenerateReportTemplate.Size = New System.Drawing.Size(124, 22)
+        Me.GenerateReportTemplate.Text = "导入备份"
         '
         '退出ToolStripMenuItem
         '
         Me.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem"
-        Me.退出ToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.退出ToolStripMenuItem.Size = New System.Drawing.Size(124, 22)
         Me.退出ToolStripMenuItem.Text = "退出"
+        '
+        '报表模板处理ToolStripMenuItem
+        '
+        Me.报表模板处理ToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.增加报表ToolStripMenuItem, Me.修改报表ToolStripMenuItem, Me.删除报表ToolStripMenuItem, Me.发布模板ToolStripMenuItem, Me.导入模板ToolStripMenuItem, Me.选择报表ToolStripMenuItem})
+        Me.报表模板处理ToolStripMenuItem.Name = "报表模板处理ToolStripMenuItem"
+        Me.报表模板处理ToolStripMenuItem.Size = New System.Drawing.Size(92, 21)
+        Me.报表模板处理ToolStripMenuItem.Text = "报表模板处理"
+        '
+        '增加报表ToolStripMenuItem
+        '
+        Me.增加报表ToolStripMenuItem.Name = "增加报表ToolStripMenuItem"
+        Me.增加报表ToolStripMenuItem.Size = New System.Drawing.Size(124, 22)
+        Me.增加报表ToolStripMenuItem.Text = "增加报表"
+        '
+        '修改报表ToolStripMenuItem
+        '
+        Me.修改报表ToolStripMenuItem.Name = "修改报表ToolStripMenuItem"
+        Me.修改报表ToolStripMenuItem.Size = New System.Drawing.Size(124, 22)
+        Me.修改报表ToolStripMenuItem.Text = "修改报表"
+        '
+        '删除报表ToolStripMenuItem
+        '
+        Me.删除报表ToolStripMenuItem.Name = "删除报表ToolStripMenuItem"
+        Me.删除报表ToolStripMenuItem.Size = New System.Drawing.Size(124, 22)
+        Me.删除报表ToolStripMenuItem.Text = "删除报表"
+        '
+        '发布模板ToolStripMenuItem
+        '
+        Me.发布模板ToolStripMenuItem.Name = "发布模板ToolStripMenuItem"
+        Me.发布模板ToolStripMenuItem.Size = New System.Drawing.Size(124, 22)
+        Me.发布模板ToolStripMenuItem.Text = "导出模板"
+        '
+        '导入模板ToolStripMenuItem
+        '
+        Me.导入模板ToolStripMenuItem.Name = "导入模板ToolStripMenuItem"
+        Me.导入模板ToolStripMenuItem.Size = New System.Drawing.Size(124, 22)
+        Me.导入模板ToolStripMenuItem.Text = "导入模板"
+        '
+        '选择报表ToolStripMenuItem
+        '
+        Me.选择报表ToolStripMenuItem.Name = "选择报表ToolStripMenuItem"
+        Me.选择报表ToolStripMenuItem.Size = New System.Drawing.Size(124, 22)
+        Me.选择报表ToolStripMenuItem.Text = "加入报表"
+        '
+        '查询ToolStripMenuItem
+        '
+        Me.查询ToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.DataQueryToolStripMenuItem, Me.导出查询结果ToolStripMenuItem})
+        Me.查询ToolStripMenuItem.Name = "查询ToolStripMenuItem"
+        Me.查询ToolStripMenuItem.Size = New System.Drawing.Size(44, 21)
+        Me.查询ToolStripMenuItem.Text = "查询"
+        '
+        'DataQueryToolStripMenuItem
+        '
+        Me.DataQueryToolStripMenuItem.Name = "DataQueryToolStripMenuItem"
+        Me.DataQueryToolStripMenuItem.Size = New System.Drawing.Size(148, 22)
+        Me.DataQueryToolStripMenuItem.Text = "数据查询"
+        '
+        '导出查询结果ToolStripMenuItem
+        '
+        Me.导出查询结果ToolStripMenuItem.Name = "导出查询结果ToolStripMenuItem"
+        Me.导出查询结果ToolStripMenuItem.Size = New System.Drawing.Size(148, 22)
+        Me.导出查询结果ToolStripMenuItem.Text = "导出查询结果"
         '
         'ReportManage
         '
@@ -328,6 +405,7 @@ Partial Class MainForm
         Me.ReportManage.Name = "ReportManage"
         Me.ReportManage.Size = New System.Drawing.Size(68, 21)
         Me.ReportManage.Text = "报表管理"
+        Me.ReportManage.Visible = False
         '
         '明细表管理ToolStripMenuItem
         '
@@ -375,18 +453,6 @@ Partial Class MainForm
         Me.ExpotReportMenu.Size = New System.Drawing.Size(100, 22)
         Me.ExpotReportMenu.Text = "导出"
         '
-        'ToolStripMenuItem4
-        '
-        Me.ToolStripMenuItem4.Name = "ToolStripMenuItem4"
-        Me.ToolStripMenuItem4.Size = New System.Drawing.Size(152, 22)
-        Me.ToolStripMenuItem4.Text = "报表总览"
-        '
-        'ToolStripMenuItem5
-        '
-        Me.ToolStripMenuItem5.Name = "ToolStripMenuItem5"
-        Me.ToolStripMenuItem5.Size = New System.Drawing.Size(152, 22)
-        Me.ToolStripMenuItem5.Text = "导出"
-        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
@@ -422,7 +488,7 @@ Partial Class MainForm
     Friend WithEvents DataGridView1 As System.Windows.Forms.DataGridView
     Friend WithEvents MenuStrip1 As System.Windows.Forms.MenuStrip
     Friend WithEvents ToolStripMenuItem10 As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ImportTemplate As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents GenerateReportTemplate As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents 退出ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ReportManage As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents 明细表管理ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
@@ -454,7 +520,16 @@ Partial Class MainForm
     Friend WithEvents ExpotReportMenu As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents FolderBrowserDialog1 As System.Windows.Forms.FolderBrowserDialog
     Friend WithEvents ImportDataMenu As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem4 As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem5 As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ExportDataToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents 报表模板处理ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents 查询ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents DataQueryToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents 导出查询结果ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents 增加报表ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents 修改报表ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents 删除报表ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents 发布模板ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents 选择报表ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents 导入模板ToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

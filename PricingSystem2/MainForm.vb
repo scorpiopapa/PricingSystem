@@ -31,7 +31,7 @@ Public Class MainForm
                 ReportManage.Visible = False
                 Me.Text = TITLE + "-报价单位版"
             Else
-                ImportTemplate.Visible = False
+                GenerateReportTemplate.Visible = False
                 Me.Text = TITLE + "-审价单位版"
             End If
 
@@ -348,7 +348,8 @@ Public Class MainForm
         End Using
     End Sub
 
-    Private Sub ToolStripMenuItem0_Click(sender As Object, e As EventArgs) Handles ImportTemplate.Click
+    'rem 导入模板
+    Private Sub ToolStripMenuItem0_Click(sender As Object, e As EventArgs) Handles GenerateReportTemplate.Click
         ImportForm.ShowDialog(Me)
 
         Dim year As Integer = FormUtils.ReportYear
@@ -723,13 +724,13 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub ToolStripMenuItem4_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem4.Click
+    Private Sub ToolStripMenuItem4_Click(sender As Object, e As EventArgs)
         'SwitchTabPage()
         'TabControl1.SelectedIndex = 0
-        TreeView1.SelectedNode = TreeView1.Nodes(0)
+        'TreeView1.SelectedNode = TreeView1.Nodes(0)
     End Sub
 
-    Private Sub 导出ToolStripMenuItem5_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem5.Click
+    Private Sub 导出ToolStripMenuItem5_Click(sender As Object, e As EventArgs) Handles ExportDataToolStripMenuItem.Click
         If IsNothing(TreeView1.SelectedNode) OrElse Not CanExport() Then
             FormUtils.ShowErrorMessage(EMPTY_EXPORT_ITEM)
             Exit Sub
@@ -737,6 +738,14 @@ Public Class MainForm
 
 
         ExportReport()
+
+    End Sub
+
+    Private Sub DataQueryToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DataQueryToolStripMenuItem.Click
+        TreeView1.SelectedNode = TreeView1.Nodes(0)
+    End Sub
+
+    Private Sub 发布模板ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 发布模板ToolStripMenuItem.Click
 
     End Sub
 End Class
